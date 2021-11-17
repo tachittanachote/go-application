@@ -10,6 +10,7 @@ import PassengerScreen from "./PassengerScreen"
 import WaitScreen from "./WaitScreen"
 import TravelScreen from "./TravelScreen"
 import DrivingScreen from "./DrivingScreen"
+import WalletScreen from './WalletScreen'
 
 export {
     Home,
@@ -24,4 +25,5 @@ export {
     WaitScreen,
     TravelScreen,
     DrivingScreen,
+    WalletScreen,
 }
