@@ -5,8 +5,10 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ScrollView
 } from 'react-native';
+import { SwipeablePanel } from 'rn-swipeable-panel';
 import { Icon } from 'react-native-elements';
 import { BackButton } from '../components';
 
@@ -16,9 +18,111 @@ import { COLORS, SIZES, FONTS } from '../constants';
 import _ from 'lodash'
 import { UserContext } from '../context';
 
+import Omise from 'omise-react-native';
+
 class WalletScreen extends Component {
 
   static contextType = UserContext
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isPanelActive: false,
+      panelProps: {
+        fullWidth: true,
+        onlySmall: true,
+        onClose: () => this.closePanel(),
+        onPressCloseButton: () => this.closePanel(),
+      },
+    }
+  }
+
+
+  onPromptPay() {
+    Omise.config('pkey_test_5pwlho38cug2ym4yiao', '2017-11-02');
+  }
+
+  renderContent() {
+
+    console.log("render!")
+
+    return (
+      <View style={{
+        padding: SIZES.padding
+      }}>
+        <View>
+          <Text style={{
+            ...FONTS.h5
+          }}>All top-up methods</Text>
+        </View>
+        <View style={{
+          marginTop: SIZES.margin
+        }}>
+          <TouchableWithoutFeedback>
+            <View style={styles.paymentMethod}>
+              <View>
+                <Icon
+                  reverse
+                  type='ionicon'
+                  name='qr-code-outline'
+                  size={18}
+                  color='#E3FCFF'
+                  reverseColor='#00DF5F'
+                />
+              </View>
+              <View style={styles.paymentLabel}>
+                <View>
+                  <Text>Prompt Pay </Text>
+                </View>
+                <View style={{ flex: 2, alignItems: 'flex-end' }}>
+                  <Icon
+                    type='ionicon'
+                    name='chevron-forward-outline'
+                    size={14}
+                    color={COLORS.lightGray2}
+                  />
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+        <View>
+          <TouchableWithoutFeedback>
+            <View style={styles.paymentMethod}>
+              <View>
+                <Icon
+                  reverse
+                  type='ionicon'
+                  name='card-outline'
+                  size={18}
+                  color={COLORS.lightGray2}
+                  color='#FFF3DE'
+                  reverseColor='#FF7C00'
+                />
+              </View>
+              <View style={styles.paymentLabel}>
+                <View>
+                  <Text>Credit Card</Text>
+                </View>
+                <View style={{ flex: 2, alignItems: 'flex-end'}}>
+                  <Icon
+                    type='ionicon'
+                    name='chevron-forward-outline'
+                    size={14}
+                    color={COLORS.lightGray2}
+                  />
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
+    )
+  }
+
+  closePanel = () => {
+    this.setState({ isPanelActive: false });
+  };
 
   render() {
     return (
@@ -152,7 +256,7 @@ class WalletScreen extends Component {
                 <View style={styles.suggestionMenu}>
                   <TouchableOpacity style={{
                     flexDirection: 'row',
-                  }}>
+                  }} onPress={() => this.setState({ isPanelActive: true })}>
                     <Icon
                       type='ionicon'
                       name='add-outline'
@@ -263,9 +367,13 @@ class WalletScreen extends Component {
                 </View>
               </View>
             ))}
-            
+
 
           </ScrollView>
+
+          <SwipeablePanel {...this.state.panelProps} isActive={this.state.isPanelActive}>
+            {this.renderContent()}
+          </SwipeablePanel>
 
         </View>
 
@@ -311,6 +419,15 @@ const styles = StyleSheet.create({
   menuText: {
     marginLeft: 5,
     ...FONTS.body4
+  },
+  paymentMethod: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  paymentLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   }
 
 });
