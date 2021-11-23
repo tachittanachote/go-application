@@ -70,8 +70,9 @@ class DrivingScreen extends Component {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
-        }).then((e) => {
+        }).then(async (e) => {
             if (e.data === "success") {
+                await this.recordHistory(this.state.coordinates.latitude, this.state.coordinates.longitude, 10)
                 this.props.navigation.navigate("Lobby")
             }
         }).catch((e) => {
@@ -109,6 +110,63 @@ class DrivingScreen extends Component {
         );
     }
 
+    async recordHistory(lat, long, distance) {
+        console.log('function record had called!')
+        axios.post("/history/update", {
+            carId: this.context.user.user_id,
+            user: {
+                id: this.context.user.user_id,
+            },
+            info: {
+                destination: {
+                    lat: lat,
+                    long: long
+                },
+                distance: distance,
+            }
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then(async (e) => {
+            if(e.data === "success") {
+                console.log('history record had updated!')
+            }else{
+                console.log('history update errorrrrr')
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
+    async recordPassengerHistory(passengerId, lat, long, distance) {
+        console.log('function record had called!')
+        axios.post("/history/update", {
+            carId: this.context.user.user_id,
+            user: {
+                id: passengerId,
+            },
+            info: {
+                destination: {
+                    lat: lat,
+                    long: long
+                },
+                distance: distance,
+            }
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((e) => {
+            if(e.data === "success") {
+                console.log('history record had updated!')
+            }else{
+                console.log('history update errorrrrr')
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
 
 
     dropPassenger = async (passengerId) => {
@@ -137,9 +195,11 @@ class DrivingScreen extends Component {
                         headers: {
                             authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
                         }
-                    }).then((e) => {
-                        if (e.data === "success") {
-                            Alert.alert("สำเร็จ")
+                    }).then(async (e) => {
+                        if (e.data.status === "success") {
+                           
+                            await recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
+                            //Alert.alert("สำเร็จ")
                         }
                     }).catch((e) => {
                         console.log(e)
