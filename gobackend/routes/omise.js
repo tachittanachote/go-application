@@ -12,10 +12,17 @@ const omise = require('omise')({
 });
 
 router.post("/events", async (req, res) => {
-    if(req.body.key === 'charge.complete') {
+    if (req.body.key === 'charge.complete' && req.body.data.status === 'successful') {
         const id = req.body.data.id.split("_")[2];
         const wallet = await walletTransactionController.updateWalletTransactionById(id, "success")
+        if (wallet.affectedRows !== 1) return res.json("error")
+
+        //Get User Id
+        //Add User Balance
+
+        return res.json("success")
     }
+    return res.json("error")
 });
 
 router.post("/create", middleware.verifySessionToken, async (req, res) => {
@@ -128,7 +135,13 @@ router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
     if (!id) return res.json("error");
     const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
     if (wallet.affectedRows !== 1) return res.json("error");
-    res.json("success")
+    omise.charges.update(`chrg_test_${id}`, {
+        status: 'failed'
+    }, function (err, resp) {
+        console.log(resp);
+        res.json("success")
+    });
+    
 })
 
 
