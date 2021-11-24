@@ -17,7 +17,7 @@ exports.addWalletTransaction = (wallet) => {
 
 exports.updateWalletTransactionById = (id, status) => {
     return new Promise((resolve, reject) => {
-        db.query(`UPDATE wallet_transactions SET status = '?', updated_at = ? WHERE wallet_transaction_id = ?`, [id, status], (err, result) => {
+        db.query(`UPDATE wallet_transactions SET status = ?, updated_at = ? WHERE wallet_transaction_id = ?`, [id, status], (err, result) => {
             if (err) reject(err);
             resolve(result);
         });
