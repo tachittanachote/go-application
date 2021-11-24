@@ -35,6 +35,7 @@ class PromptPayScreen extends Component {
     }
 
     async checkPendingTransaction() {
+        console.log("Check")
         axios.post('/omise/check', {}, {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
