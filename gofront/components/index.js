@@ -10,6 +10,7 @@ import CircleMenu from "./CircleMenu";
 import DriverFilter from "./DriverFilter";
 import PassengerFilter from "./PassengerFilter";
 import Slider from "./Slider";
+import EmergencyButton from "./EmergencyButton"
 
 export {
     AppHeader,
@@ -24,4 +25,5 @@ export {
     DriverFilter,
     PassengerFilter,
     Slider,
+    EmergencyButton
 }

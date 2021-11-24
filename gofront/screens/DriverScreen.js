@@ -6,7 +6,7 @@ import { Icon } from 'react-native-elements';
 import MapViewDirections from 'react-native-maps-directions'
 
 import { getDeltaCoordinates, requestGeolocationPermission } from '../utils';
-import { Preload, BackButton, Title, SuggestionPlace, HorizontalLine, DriverFilter } from '../components';
+import { Preload, BackButton, Title, SuggestionPlace, HorizontalLine, DriverFilter, EmergencyButton } from '../components';
 import { COLORS, FONTS, GOOGLE_API_KEY, images, MAPS, SIZES } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -250,6 +250,7 @@ class DriverScreen extends PureComponent {
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
+                <EmergencyButton user={this.context.user} driverId={null}></EmergencyButton>
                 <BackButton navigation={this.props.navigation}></BackButton>
                 <DriverFilter onFilterCallback={(filterData) => this.onFilterCallback(filterData)}></DriverFilter>
 

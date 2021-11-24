@@ -12,7 +12,7 @@ const authRoute = require("./routes/auth");
 const invoiceRoute = require("./routes/invoices");
 const locationRoute = require("./routes/location");
 const profileRoute = require("./routes/profile");
-
+const emergencyRoute = require("./routes/emergency")
 //Middleware
 const middleware = require("./middleware");
 
@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 //No middleware require
 router.use('/device', devicesRoute)
-
+router.use('/emergency', emergencyRoute)
 //Middleware verify token
 router.use('/otp', middleware.verifyDevice, otpRoute)
 

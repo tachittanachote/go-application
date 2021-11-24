@@ -9,6 +9,7 @@ import DatePicker from 'react-native-date-picker'
 import { SIZES, COLORS, FONTS } from '../constants';
 import { UserContext } from '../context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import validator from 'validator'
 
 class Profile extends Component {
 
@@ -21,9 +22,18 @@ class Profile extends Component {
             last_name: null,
             email: null,
             phone_number: null,
+            emergency_phone_number: null,
             gender: null,
             date_of_birth: null,
-            date_picker_state: false
+            license_plate: null,
+            brand: null,
+            model: null,
+            color: null,
+            date_picker_state: false,
+            emailErrorText: null,
+            phoneNumberErrorText: null,
+            emergencyPhoneNumberErrorText: null,
+            carInfoErrorText: null
         }
 
 
@@ -46,7 +56,12 @@ class Profile extends Component {
                 email: profile.email,
                 phone_number: profile.phone_number,
                 gender: profile.gender,
-                date_of_birth: profile.date_of_birth
+                date_of_birth: profile.date_of_birth,
+                emergency_phone_number: profile.emergency_phone_number,
+                license_plate: profile.license_plate,
+                brand: profile.brand,
+                model: profile.model,
+                color: profile.color,
             })
         }).catch((e) => {
             console.log(e)
@@ -56,36 +71,78 @@ class Profile extends Component {
     }
 
     updateUserInfo = async () => {
+        var correct = true;
+        var correctEmail = true;
+        var correctPhoneNumber = true;
+        var correctEmergencyPhoneNumber = true;
+        var correctCarInfo = true;
 
-        axios.post('/profile/update', {
-            user: {
-                user_id: this.context.user.user_id,
-                first_name: this.state.first_name,
-                last_name: this.state.last_name,
-                email: this.state.email,
-                phone_number: this.state.phone_number,
-                gender: this.state.gender,
-                date_of_birth: this.state.date_of_birth
+        if (this.state.first_name === null || this.state.first_name === "") this.setState({ first_name: this.context.user.first_name }); correct = false
+        if (this.state.last_name === null || this.state.last_name === "") this.setState({ last_name: this.state.last_name }); correct = false
+
+        if (!validator.isEmail(this.state.email)) { this.setState({ emailErrorText: "please enter new email with correct format" }); correctEmail = false; correct = false }
+        if (validator.isEmail(this.state.email)) { correctEmail = true; this.setState({ emailErrorText: null }) }
+
+        if (this.state.phone_number.length !== 10 || this.state.phone_number.charAt(0) !== "0") { this.setState({ phoneNumberErrorText: "please start with 0 or make sure it is 10 digits" }); correctPhoneNumber = false; correct = false }
+        if (!(this.state.phone_number.length !== 10 || this.state.phone_number.charAt(0) !== "0")) { correctPhoneNumber = true; correct = true; this.setState({ phoneNumberErrorText: null }) }
+
+        if (this.state.emergency_phone_number.length != 0) {
+            if (this.state.emergency_phone_number.length !== 10 || this.state.emergency_phone_number.charAt(0) !== "0") { this.setState({ emergencyPhoneNumberErrorText: "please start with 0 or make sure it is 10 digits" }); correctEmergencyPhoneNumber = false; correct = false }
+            else { correctEmergencyPhoneNumber = true; correct = true; this.setState({ emergencyPhoneNumberErrorText: null }) }
+        }
+
+        if (this.state.gender === null || this.state.gender === "") this.setState({ gender: this.context.user.gender }); correct = false
+        if (this.state.date_of_birth === null || this.state.date_of_birth === "") this.setState({ date_of_birth: this.context.user.date_of_birth }); correct = false
+
+        if (!(this.state.first_name === null || this.state.first_name === "") && !(this.state.last_name === null || this.state.last_name === "")
+            && correctEmail === true && correctPhoneNumber === true && !(this.state.gender === null || this.state.gender === "")
+            && !(this.state.date_of_birth === null || this.state.date_of_birth === "")) {
+            correct = true
+        }
+
+        if (this.state.license_plate.length !== 0 | this.state.brand.length !== 0 | this.state.model.length !== 0 | this.state.color.length !== 0) {
+            if (this.state.license_plate.length === 0 | this.state.brand.length === 0 | this.state.model.length === 0 | this.state.color.length === 0) {
+                this.setState({carInfoErrorText:"please completely input information of your car"});correct = false;correctCarInfo = false
             }
-        }, {
-            headers: {
-                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
-            }
-        }).then((e) => {
-            if (e.data === 'success') {
-                //console.log(this.context)
-                this.context.updateContext()
-                this.setState({ editState: false })
-            } else {
-                alert("error, something went wrong")
-            }
+        }
 
-        }).catch((e) => {
-            console.log(e)
-        })
+        console.log("information correctness:", correct, "phoneNumber:", correctPhoneNumber, "email:", correctEmail, "car information:", correctCarInfo)
+
+        if (correct === true & correctPhoneNumber === true & correctEmail === true & correctEmergencyPhoneNumber === true & correctCarInfo === true) {
+            axios.post('/profile/update', {
+                user: {
+                    user_id: this.context.user.user_id,
+                    first_name: this.state.first_name,
+                    last_name: this.state.last_name,
+                    email: this.state.email,
+                    phone_number: this.state.phone_number,
+                    gender: this.state.gender,
+                    date_of_birth: this.state.date_of_birth,
+                    emergency_phone_number: this.state.emergency_phone_number,
+                    license_plate:this.state.license_plate,
+                    brand:this.state.brand,
+                    model:this.state.model,
+                    color:this.state.color
+                }
+            }, {
+                headers: {
+                    authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+                }
+            }).then((e) => {
+                if (e.data === 'success') {
+                    //console.log(this.context)
+                    this.context.updateContext()
+                    this.setState({ editState: false })
+                } else {
+                    alert("error, something went wrong")
+                }
+
+            }).catch((e) => {
+                console.log(e)
+            })
 
 
-
+        }
     }
 
     handleProfileEdit = async () => {
@@ -107,7 +164,13 @@ class Profile extends Component {
                     email: profile.email,
                     phone_number: profile.phone_number,
                     gender: profile.gender,
-                    date_of_birth: profile.date_of_birth
+                    date_of_birth: profile.date_of_birth,
+                    emergency_phone_number: profile.emergency_phone_number,
+                    license_plate: profile.license_plate,
+                    brand: profile.brand,
+                    model: profile.model,
+                    color: profile.color
+
                 })
             }).catch((e) => {
                 console.log(e)
@@ -120,11 +183,11 @@ class Profile extends Component {
 
     handleLogout() {
         AsyncStorage.getAllKeys()
-        .then(keys => AsyncStorage.multiRemove(keys))
-        .then(() => {
-            this.props.navigation.navigate("Home")
-        });
-        
+            .then(keys => AsyncStorage.multiRemove(keys))
+            .then(() => {
+                this.props.navigation.navigate("Home")
+            });
+
     }
 
 
@@ -189,9 +252,18 @@ class Profile extends Component {
                                     <Text style={styles.info}>{this.state.first_name === null ? this.context.user.first_name : this.state.first_name}</Text>
                                     <Text style={styles.info}>{this.state.last_name === null ? this.context.user.last_name : this.state.last_name}</Text>
                                     <Text style={styles.info}>{this.state.email === null ? this.context.user.email : this.state.email}</Text>
-                                    <Text style={styles.info}>{this.state.phone_number === null ? this.context.user.phone_number : this.state.phone_number}</Text>
+                                    <Text style={styles.info}>เบอร์โทร {this.state.phone_number === null ? this.context.user.phone_number : this.state.phone_number}</Text>
+                                    <Text style={styles.info}>เบอร์ฉุกเฉิน {this.state.emergency_phone_number === null ? <>{this.context.user.emergency_phone_number === null ? <>ยังไม่มีเบอร์โทรฉุกเฉิน</> : <>{this.context.user.emergency_phone_number}</>}</> : <>{this.state.emergency_phone_number}</>}</Text>
                                     <Text style={styles.info}>เพศ {this.state.gender === null ? this.context.user.gender : this.state.gender}</Text>
-                                    <Text style={styles.info}>วันเกิด {this.state.date_of_birth === null ? this.context.user.date_of_birth : this.state.date_of_birth}</Text>
+                                    <Text style={styles.info}>วันเกิด {this.state.date_of_birth === null ?
+                                        <>{this.context.user.date_of_birth === null ? <>ยังไม่กำหนดวันเกิด</> : this.context.user.date_of_birth}</> : this.state.date_of_birth}</Text>
+                                    <Text style={styles.info}>เบอร์ฉุกเฉิน {this.state.emergency_phone_number === null ? <>{this.context.user.emergency_phone_number === null ? <>ยังไม่มีเบอร์โทรฉุกเฉิน</> : <>{this.context.user.emergency_phone_number}</>}</> : <>{this.state.emergency_phone_number}</>}</Text>
+
+                                    <Text style={styles.info}>ทะเบียนรถยนต์ {this.state.license_plate === null ? <>{this.context.user.license_plate === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.license_plate}</>}</> : <>{this.state.license_plate}</>}</Text>
+                                    <Text style={styles.info}>ยี่ห้อรถยนต์ {this.state.brand === null ? <>{this.context.user.brand === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.brand}</>}</> : <>{this.state.brand}</>}</Text>
+                                    <Text style={styles.info}>รุ่นรถยนต์ {this.state.model === null ? <>{this.context.user.model === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.model}</>}</> : <>{this.state.model}</>}</Text>
+                                    <Text style={styles.info}>สีรถยนต์ {this.state.model === null ? <>{this.context.user.color === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.color}</>}</> : <>{this.state.color}</>}</Text>
+
                                 </>
 
                                 :
@@ -217,6 +289,11 @@ class Profile extends Component {
                                         placeholder="email"
                                         keyboardType="default"
                                     />
+                                    <Text style={{
+                                        color: COLORS.red,
+                                        marginBottom: SIZES.marginBottom,
+                                        ...FONTS.body3
+                                    }}>{this.state.emailErrorText}</Text>
                                     <TextInput
                                         style={styles.info}
                                         onChangeText={(text) => this.setState({ phone_number: text })}
@@ -224,6 +301,23 @@ class Profile extends Component {
                                         placeholder="phone number"
                                         keyboardType="default"
                                     />
+                                    <Text style={{
+                                        color: COLORS.red,
+                                        marginBottom: SIZES.marginBottom,
+                                        ...FONTS.body3
+                                    }}>{this.state.phoneNumberErrorText}</Text>
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ emergency_phone_number: text })}
+                                        value={this.state.emergency_phone_number}
+                                        placeholder="emergency phone number"
+                                        keyboardType="default"
+                                    />
+                                    <Text style={{
+                                        color: COLORS.red,
+                                        marginBottom: SIZES.marginBottom,
+                                        ...FONTS.body3
+                                    }}>{this.state.emergencyPhoneNumberErrorText}</Text>
                                     <View style={styles.info}>
                                         <Picker
                                             selectedValue={this.state.gender}
@@ -249,7 +343,34 @@ class Profile extends Component {
                                     <TouchableWithoutFeedback onPress={() => this.setState({ date_picker_state: true })}>
                                         <Text style={styles.info}>วันเกิด {this.state.date_of_birth}</Text>
                                     </TouchableWithoutFeedback>
-
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ license_plate: text })}
+                                        value={this.state.license_plate}
+                                        placeholder="ทะเบียนรถยนต์"
+                                        keyboardType="default"
+                                    />
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ brand: text })}
+                                        value={this.state.brand}
+                                        placeholder="ยี่ห้อรถยนต์"
+                                        keyboardType="default"
+                                    />
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ model: text })}
+                                        value={this.state.model}
+                                        placeholder="รุ่นรถยนต์"
+                                        keyboardType="default"
+                                    />
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ color: text })}
+                                        value={this.state.color}
+                                        placeholder="สีรถยนต์"
+                                        keyboardType="default"
+                                    />
                                 </>
                             }
                         </View>

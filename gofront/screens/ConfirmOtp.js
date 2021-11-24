@@ -173,7 +173,7 @@ class ConfirmOtp extends Component {
               color: COLORS.red,
               marginTop: SIZES.margin * 2,
               ...FONTS.body2
-            }}>รหัสไม่ถูกต้อง คุณสามารถลองได้อีก {this.state.attempt} ครั้ง</Text>
+            }}>รหัสไม่ถูกต้อง คุณสามารถลองได้อีก {3-this.state.attempt} ครั้ง</Text>
           }
 
         </View>

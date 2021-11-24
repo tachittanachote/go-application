@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableWithoutFeedback, Alert, Image, ScrollView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import { Preload } from '../components';
+import { Preload, EmergencyButton } from '../components';
 import { COLORS, SIZES, FONTS, images, MAPS } from '../constants';
 import { getDeltaCoordinates, requestGeolocationPermission } from '../utils';
 import { SwipeablePanel } from 'rn-swipeable-panel';
@@ -191,7 +191,7 @@ class DrivingScreen extends Component {
                                 textAlign: 'center',
                                 color: COLORS.red,
                                 ...FONTS.h5
-                            }}>สิ้นสุดการเดืนทาง</Text>
+                            }}>สิ้นสุดการเดินทาง</Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </ScrollView>
@@ -396,6 +396,7 @@ class DrivingScreen extends Component {
                         <SwipeablePanel {...this.state.panelProps} isActive={this.state.isPanelActive}>
                             {this.renderContent()}
                         </SwipeablePanel>
+                        <View style={{position:"absolute",right:10,top:"53%"}}><EmergencyButton user={this.context.user} driverId={null}></EmergencyButton></View>
                     </View>
                 }
             </SafeAreaView>

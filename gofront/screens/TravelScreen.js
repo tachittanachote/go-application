@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView, StyleSheet, TouchableWithoutFeedback } from '
 import _ from 'lodash';
 import Geolocation from '@react-native-community/geolocation';
 
-import { HorizontalLine, Title } from '../components';
+import { HorizontalLine, Title, EmergencyButton } from '../components';
 import { COLORS, FONTS, SIZES } from '../constants';
 import axios from 'axios';
 import { UserContext } from '../context';
@@ -199,8 +199,10 @@ class TravelScreen extends Component {
                             textAlign: 'center',
                             color: COLORS.secondary,
                             ...FONTS.subtitle,
-                        }}>กำลังประมวลผล</Text>
+                        }}>กำลังประมวลผล
+                        </Text> 
                     }
+                    <View style={{position: 'absolute', top: '100%'}}><EmergencyButton user={this.context.user} driverId={this.props.route.params.driver.carId}></EmergencyButton></View>
                 </View>
                 <View style={{
                     position: 'absolute',
