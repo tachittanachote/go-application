@@ -214,15 +214,46 @@ class DriverScreen extends PureComponent {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
-        }).then((e) => {
+        }).then(async(e) => {
             console.log(e.data)
             if(e.data === "success") {
+                await this.recordHistory(this.state.coordinates.latitude, this.state.coordinates.longitude);
                 this.props.navigation.navigate("DrivingScreen")
             }
         }).catch((e) => {
             console.log(e)
         })
     }
+
+    async recordHistory(lat, long) {
+        console.log('function record had called!')
+        axios.post("/history/create", {
+            carId: this.context.user.user_id,
+            user: {
+                id: this.context.user.user_id,
+                type: 'driver',
+            },
+            info: {
+                origin: {
+                    lat: lat,
+                    long: long
+                }
+            }
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((e) => {
+            if(e.data === "success") {
+                console.log('history record had created!')
+            }else{
+                console.log('history errorrrrr')
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
 
     onFilterCallback(data) {
         this.setState({ filterOptions: data }, () => {

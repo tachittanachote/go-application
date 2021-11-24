@@ -175,6 +175,12 @@ router.post("/dropPassenger", async(req, res) => { //
   //console.log(bill[0].passengerId)
   //console.log(bill[0].node) //use to find distant
   console.log(bill);
+
+  let billDestination = {
+    lat:null,
+    long:null
+  }
+
   if (bill.length !== 0) {
     let billInfo = bill[0];
     var thisPrice = 0;
@@ -186,11 +192,16 @@ router.post("/dropPassenger", async(req, res) => { //
    
       if (nextNode === undefined) {
 
+        billDestination.lat = node.latitude;
+        billDestination.long= node.longitude;
+
         let resultBill = {
           price: thisPrice,
           distance: distanceAmount / 1000,
           passengerId: passenger.id,
           passengerName: passenger.passengerName,
+          destination: billDestination,
+          status: 'success'
         };
        
 
@@ -262,7 +273,7 @@ router.post("/dropPassenger", async(req, res) => { //
             passengers.removePassengerWhilegetOff(passenger.id);
           })
           .catch((e) => {
-            //console.log("catching error" + e)
+            console.log("catching error" + e)
             res.json(e)
             return;
           });

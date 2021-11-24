@@ -13,6 +13,8 @@ const invoiceRoute = require("./routes/invoices");
 const locationRoute = require("./routes/location");
 const profileRoute = require("./routes/profile");
 const omiseRoute = require("./routes/omise");
+const historyRoute = require("./routes/history");
+const feedbackRoute = require("./routes/feedback");
 
 //Middleware
 const middleware = require("./middleware");
@@ -44,11 +46,13 @@ router.use('/auth', middleware.verifyAccessToken, authRoute)
 
 //Middleware session token
 router.use('/user', middleware.verifySessionToken, usersRoute)
-router.use('/cars', middleware.verifySessionToken, carsRoute)
+router.use('/cars', carsRoute)
 router.use('/location', middleware.verifySessionToken, locationRoute)
 router.use('/invoices', middleware.verifySessionToken, invoiceRoute)
 router.use('/profile', middleware.verifySessionToken, profileRoute)
 router.use('/omise', omiseRoute)
+router.use('/history', historyRoute)
+router.use('/feedback', feedbackRoute)
 
 app.listen(PORT, () => {
     console.log(`SERVER: listening on 0.0.0.0:${PORT}`)

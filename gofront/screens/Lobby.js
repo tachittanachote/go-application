@@ -234,6 +234,19 @@ class Lobby extends Component {
                 </View>
 
                 <View style={{
+                    marginTop: 60,
+                    flexDirection: 'row',
+                    padding: SIZES.padding,
+                }}>
+                    <View style={{
+                        flex: 1,
+                        marginRight: 5,
+                    }}>
+                        <MenuButton navigation={this.props.navigation} buttonLabel="ประวัติการเดินทาง" to="HistoryScreen" iconName="history" ></MenuButton>
+                    </View>
+                </View>
+
+                <View style={{
                     marginTop: 20,
                     padding: SIZES.padding
                 }}>

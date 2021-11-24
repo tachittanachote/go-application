@@ -10,6 +10,8 @@ import PassengerScreen from "./PassengerScreen"
 import WaitScreen from "./WaitScreen"
 import TravelScreen from "./TravelScreen"
 import DrivingScreen from "./DrivingScreen"
+import HistoryScreen from "./HistoryScreen"
+import HistoryInfoScreen from "./HistoryInfoScreen"
 import WalletScreen from './WalletScreen'
 
 export {
@@ -25,5 +27,7 @@ export {
     WaitScreen,
     TravelScreen,
     DrivingScreen,
+    HistoryScreen,
+    HistoryInfoScreen,
     WalletScreen,
 }
