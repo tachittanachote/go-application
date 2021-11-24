@@ -137,7 +137,7 @@ router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
     if (wallet.affectedRows !== 1) return res.json("error");
     var options = {
         'method': 'POST',
-        'url': `https://api.omise.co/charges/${id}/mark_as_failed`,
+        'url': `https://api.omise.co/charges/chrg_test_${id}/mark_as_failed`,
         'headers': {
             'Authorization': 'Basic c2tleV90ZXN0XzVweGMxMzBqdzd4NDdwZ2UzcDM6'
         }
