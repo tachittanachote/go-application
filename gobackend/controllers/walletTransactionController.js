@@ -6,7 +6,6 @@ exports.addWalletTransaction = (wallet) => {
             [
                 wallet.id, 
                 wallet.user_id, 
-                wallet.status, 
                 wallet.amount,
                 wallet.type,
             ], (err, result) => {
