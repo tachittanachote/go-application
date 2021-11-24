@@ -98,12 +98,13 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
     }
 
     omise.charges.retrieve(wallet[0].wallet_transaction_id, function (err, resp) {
-        if (resp.paid) {
-            //Success
-        } else {
-            //Handle failure
-            throw resp.failure_code;
+        if (error) {
+            const data = {
+                status: "error",
+            }
+            return res.json(data)
         }
+        console.log(resp)
     });
 
 });
