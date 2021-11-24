@@ -14,11 +14,8 @@ import { BackButton } from '../components';
 
 import { COLORS, SIZES, FONTS } from '../constants';
 
-
 import _ from 'lodash'
 import { UserContext } from '../context';
-
-import Omise from 'omise-react-native';
 
 class WalletScreen extends Component {
 
@@ -38,8 +35,8 @@ class WalletScreen extends Component {
   }
 
 
-  onPromptPay() {
-    Omise.config('pkey_test_5pwlho38cug2ym4yiao', '2017-11-02');
+  navigate(screen) {
+    return this.props.navigation.navigate(screen)
   }
 
   renderContent() {
@@ -58,7 +55,7 @@ class WalletScreen extends Component {
         <View style={{
           marginTop: SIZES.margin
         }}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => this.navigate("PromptPayScreen")}>
             <View style={styles.paymentMethod}>
               <View>
                 <Icon
@@ -87,7 +84,7 @@ class WalletScreen extends Component {
           </TouchableWithoutFeedback>
         </View>
         <View>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => this.navigate("CreditCardScreen")}>
             <View style={styles.paymentMethod}>
               <View>
                 <Icon
@@ -197,7 +194,7 @@ class WalletScreen extends Component {
           }}>
             <TouchableOpacity style={{
               flexDirection: 'row',
-            }}>
+            }} onPress={() => this.setState({ isPanelActive: true })}>
               <View>
                 <Text style={{
                   fontWeight: 'bold',
@@ -325,8 +322,8 @@ class WalletScreen extends Component {
           }}>
 
 
-            {_.times(10, () => (
-              <View style={{
+            {_.times(10, (index) => (
+              <View key={index} style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginRight: SIZES.margin - 5,

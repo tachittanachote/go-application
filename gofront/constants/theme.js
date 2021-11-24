@@ -17,6 +17,8 @@ export const COLORS = {
     transparent: "transparent",
     lightRed: '#FFE0E0',
 
+    green: '#6AFF87',
+
     purple: '#A699FE',
     darkpurple: "#221B52",
 }
