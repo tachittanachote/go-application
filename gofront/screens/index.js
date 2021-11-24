@@ -12,6 +12,7 @@ import TravelScreen from "./TravelScreen"
 import DrivingScreen from "./DrivingScreen"
 import HistoryScreen from "./HistoryScreen"
 import HistoryInfoScreen from "./HistoryInfoScreen"
+import WalletScreen from './WalletScreen'
 
 export {
     Home,
@@ -28,4 +29,5 @@ export {
     DrivingScreen,
     HistoryScreen,
     HistoryInfoScreen,
+    WalletScreen,
 }

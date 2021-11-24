@@ -18,6 +18,7 @@
     "axios": "^0.21.4",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "omise-react-native": "^0.1.0",
     "react": "17.0.2",
     "react-native": "0.65.1",
     "react-native-date-picker": "^4.0.0",

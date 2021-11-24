@@ -16,8 +16,12 @@ import {
   WaitScreen,
   TravelScreen,
   DrivingScreen,
+<<<<<<< HEAD
   HistoryScreen,
   HistoryInfoScreen,
+=======
+  WalletScreen,
+>>>>>>> 6dcaa3a2696f0b3b3f04a88494e0de3a77afff8a
 } from './screens';
 import { UserContext } from './context';
 import axios from 'axios';
@@ -66,8 +70,12 @@ class App extends Component {
           <Stack.Screen name="WaitScreen" component={WaitScreen} />
           <Stack.Screen name="TravelScreen" component={TravelScreen} />
           <Stack.Screen name="DrivingScreen" component={DrivingScreen} />
+<<<<<<< HEAD
           <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
           <Stack.Screen name="HistoryInfoScreen" component={HistoryInfoScreen} />
+=======
+          <Stack.Screen name="WalletScreen" component={WalletScreen} />
+>>>>>>> 6dcaa3a2696f0b3b3f04a88494e0de3a77afff8a
         </Stack.Navigator>
       </NavigationContainer>
     );

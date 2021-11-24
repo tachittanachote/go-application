@@ -4,7 +4,7 @@ import { Icon } from 'react-native-elements';
 import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 
-import { CircleMenu, Slider } from '../components';
+import { Balance, CircleMenu, Slider } from '../components';
 import MenuButton from '../components/MenuButton';
 import { COLORS, FONTS, SIZES } from '../constants';
 import { UserContext } from '../context';
@@ -211,8 +211,11 @@ class Lobby extends Component {
                     <CircleMenu navigation={this.props.navigation} iconName="menu-outline" to="Profile"></CircleMenu>
                 </View>
 
+
+                <Balance navigation={this.props.navigation}></Balance>
+
                 <View style={{
-                    marginTop: 60,
+                    marginTop: 5,
                     flexDirection: 'row',
                     padding: SIZES.padding,
                 }}>
