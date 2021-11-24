@@ -75,7 +75,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                     type: 'promptpay',
                 }
 
-                walletTransactionController.addWalletTransaction()
+                walletTransactionController.addWalletTransaction(wallet)
 
                 return res.json(data)
             });
