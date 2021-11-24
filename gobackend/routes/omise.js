@@ -89,7 +89,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
 });
 
 router.post('/check', middleware.verifySessionToken, async (req, res) => {
-    const wallet = await walletTransactionController.getPendingWalletTransactionByUserId(req.user.user_id)
+    const wallet = await walletTransactionController.getPendingWalletTransactionByUserId(req.user.user_id, 'promptpay')
     console.log(wallet)
 });
 
