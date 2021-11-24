@@ -58,14 +58,14 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                     return res.json(data)
                 }
 
-                const id = resp.source.id.split("_")[2];
+                const id = resp.id.split("_")[2];
 
                 fs.writeFileSync(`public/qrcode/${id}.png`, buffer);
 
                 const data = {
                     status: "success",
                     image_uri: `https://www.gotogetherapp.me/static/qrcode/${id}.png`,
-                    qr_id: resp.source.id.split("_")[2]
+                    qr_id: id
                 }
 
                 const wallet = {
@@ -90,7 +90,22 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
 
 router.post('/check', middleware.verifySessionToken, async (req, res) => {
     const wallet = await walletTransactionController.getPendingWalletTransactionByUserId(req.user.user_id, 'promptpay')
-    console.log(wallet)
+    if (wallet.length === 0) {
+        const data = {
+            status: "ready",
+        }
+        return res.json(data)
+    }
+
+    omise.charges.retrieve(wallet[0].wallet_transaction_id, function (err, resp) {
+        if (resp.paid) {
+            //Success
+        } else {
+            //Handle failure
+            throw resp.failure_code;
+        }
+    });
+
 });
 
 
