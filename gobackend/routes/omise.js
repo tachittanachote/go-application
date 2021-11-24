@@ -97,6 +97,8 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
         return res.json(data)
     }
 
+    console.log(wallet)
+
     omise.charges.retrieve(wallet[0].wallet_transaction_id, function (err, resp) {
         if (err) {
             const data = {
