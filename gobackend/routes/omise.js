@@ -99,7 +99,7 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
 
     console.log(wallet)
 
-    omise.charges.retrieve(wallet[0].wallet_transaction_id, function (err, resp) {
+    omise.charges.retrieve(`chrg_test_${wallet[0].wallet_transaction_id}`, function (err, resp) {
         if (err) {
             const data = {
                 status: "error",
