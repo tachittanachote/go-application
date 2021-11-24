@@ -140,7 +140,7 @@ router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
             'Authorization': 'Basic c2tleV90ZXN0XzVweGMxMzBqdzd4NDdwZ2UzcDM6'
         }
     };
-    request(options, function (error, response) {
+    request(options, async function (error, response) {
         if (error) return res.json("error");
         const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
         if (wallet.affectedRows !== 1) return res.json("error");
