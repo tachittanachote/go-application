@@ -17,6 +17,8 @@ export const COLORS = {
     transparent: "transparent",
     lightRed: '#FFE0E0',
 
+    green: '#6AFF87',
+
     purple: '#A699FE',
     darkpurple: "#221B52",
 }
@@ -43,6 +45,7 @@ export const SIZES = {
     h3: 20,
     h4: 18,
     h5: 16,
+    h6: 14,
 
     body1: 30,
     body2: 20,
@@ -94,6 +97,12 @@ export const FONTS = {
         lineHeight: 22,
     },
 
+    h6: {
+        fontFamily: "Roboto-Bold",
+        fontSize: SIZES.h6,
+        lineHeight: 20,
+    },
+
     body1: {
         fontFamily: "Roboto-Regular",
         fontSize: SIZES.body1,
@@ -125,7 +134,7 @@ export const MAPS = {
     markerSize: {
         height: 32,
         width: 32,
-    }, 
+    },
     carImageSize: {
         height: 60,
         width: 32,

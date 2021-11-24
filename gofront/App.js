@@ -16,10 +16,14 @@ import {
   WaitScreen,
   TravelScreen,
   DrivingScreen,
+  HistoryScreen,
+  HistoryInfoScreen,
+  WalletScreen,
 } from './screens';
 import { UserContext } from './context';
 import axios from 'axios';
 import { requireAuth } from './middleware';
+import { CompleteScreen, CreditCardScreen, PromptPayScreen } from './screens/payments';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +68,12 @@ class App extends Component {
           <Stack.Screen name="WaitScreen" component={WaitScreen} />
           <Stack.Screen name="TravelScreen" component={TravelScreen} />
           <Stack.Screen name="DrivingScreen" component={DrivingScreen} />
+          <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
+          <Stack.Screen name="HistoryInfoScreen" component={HistoryInfoScreen} />
+          <Stack.Screen name="WalletScreen" component={WalletScreen} />
+          <Stack.Screen name="CompleteScreen" component={CompleteScreen} />
+          <Stack.Screen name="CreditCardScreen" component={CreditCardScreen} />
+          <Stack.Screen name="PromptPayScreen" component={PromptPayScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );

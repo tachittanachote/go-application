@@ -68,11 +68,16 @@ router.post('/confirm', (req, res) => {
   //passenger confirm pay
   let passenger = req.body.user;
   let carId = req.body.carId;
-  if (car.removePassengerBill(carId, passenger) !== -1) {
-    users.removeUserById(passenger.id);
+  if(car.getCarByDriverId(carId) === -1){
     return res.json("success");
+  }else{
+    if (car.removePassengerBill(carId, passenger) !== -1) {
+      users.removeUserById(passenger.id);
+      return res.json("success");
+    }
+    res.json("error");
   }
-  res.json("error");
+  
 });
 
 

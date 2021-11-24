@@ -45,6 +45,35 @@ class WaitScreen extends Component {
         })
     }
 
+    async recordHistory(lat, long) {
+        console.log('function record had called!')
+        axios.post("/history/create", {
+            carId: this.props.route.params.driver.carId,
+            user: {
+                id: this.context.user.user_id,
+                type: 'passenger',
+            },
+            info: {
+                origin: {
+                    lat: lat,
+                    long: long
+                }
+            }
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((e) => {
+            if(e.data === "success") {
+                console.log('history record had created!')
+            }else{
+                console.log('history errorrrrr')
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
     handleConfirm() {
         Geolocation.getCurrentPosition(
             async (position) => {
@@ -60,8 +89,9 @@ class WaitScreen extends Component {
                     headers: {
                         authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
                     }
-                }).then((e) => {
+                }).then(async (e) => {
                     if(e.data === "success") {
+                        await this.recordHistory(position.coords.latitude, position.coords.longitude);
                         this.props.navigation.navigate("TravelScreen", {
                             driver: this.props.route.params.driver,
                             driverTravelInfo: this.props.route.params.driverTravelInfo

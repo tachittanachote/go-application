@@ -86,3 +86,12 @@ exports.updateUserInfomationByUserId = (user) => {
         });
     });
 }
+
+exports.updateUserBalance = (userId, balance) => {
+    return new Promise((resolve, reject) => {
+        db.query('', [], (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+}

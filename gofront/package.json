@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.8",
+    "@react-native-community/checkbox": "^0.5.9",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-picker/picker": "^2.1.0",
     "@react-navigation/native": "^6.0.2",
@@ -18,6 +19,7 @@
     "axios": "^0.21.4",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "omise-react-native": "^0.1.0",
     "react": "17.0.2",
     "react-native": "0.65.1",
     "react-native-date-picker": "^4.0.0",
@@ -30,6 +32,7 @@
     "react-native-safe-area-context": "^3.3.0",
     "react-native-screens": "^3.6.0",
     "react-native-splash-screen": "^3.2.0",
+    "react-native-stars": "^1.2.2",
     "react-native-vector-icons": "^8.1.0",
     "rn-range-slider": "^2.1.1",
     "rn-swipeable-panel": "^1.2.5",

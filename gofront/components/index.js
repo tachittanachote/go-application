@@ -11,6 +11,7 @@ import DriverFilter from "./DriverFilter";
 import PassengerFilter from "./PassengerFilter";
 import Slider from "./Slider";
 import EmergencyButton from "./EmergencyButton"
+import Balance from "./Balance";
 
 export {
     AppHeader,
@@ -25,5 +26,6 @@ export {
     DriverFilter,
     PassengerFilter,
     Slider,
-    EmergencyButton
+    EmergencyButton,
+    Balance
 }
