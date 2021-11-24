@@ -50,7 +50,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                 return res.json(data)
             }
 
-            svg2img(response.body, { 'width': 680, 'height': 970 }, function (error, buffer) {
+            svg2img(response.body, { 'width': 680, 'height': 970 }, async function (error, buffer) {
                 if (error) {
                     const data = {
                         status: "error",
@@ -75,7 +75,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                     type: 'promptpay',
                 }
 
-                walletTransactionController.addWalletTransaction(wallet)
+                await walletTransactionController.addWalletTransaction(wallet)
 
                 return res.json(data)
             });
