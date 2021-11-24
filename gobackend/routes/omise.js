@@ -12,6 +12,7 @@ const omise = require('omise')({
 });
 
 router.post("/events", async (req, res) => {
+    console.log(req.body)
     if(req.body.key === 'charge.complete') {
         const wallet = await walletTransactionController.updateWalletTransactionById(id, "success")
     }
