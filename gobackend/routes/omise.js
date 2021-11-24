@@ -4,6 +4,7 @@ const svg2img = require('svg2img');
 const fs = require('fs');
 const router = express.Router();
 const walletTransactionController = require('../controllers/walletTransactionController')
+const userController = require('../controllers/userController')
 const middleware = require('../middleware')
 
 const omise = require('omise')({
@@ -17,8 +18,13 @@ router.post("/events", async (req, res) => {
         const wallet = await walletTransactionController.updateWalletTransactionById(id, "success")
         if (wallet.affectedRows !== 1) return res.json("error")
 
+        const walletInfo = await walletTransactionController.getWalletTransactionById(id)
         //Get User Id
         //Add User Balance
+        const user = await userController.getUserById(walletInfo[0].user_id)
+        const updateState = await userController.updateUserBalance(user[0].user_id)
+
+        if (updateState.affectedRows !== 1) return res.json("error")
 
         return res.json("success")
     }

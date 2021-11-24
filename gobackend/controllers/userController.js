@@ -7,6 +7,7 @@ const GET_USER_STATEMENT = "SELECT * FROM users WHERE user_id = ? "
 const GET_USER_STATEMENT_BY_PHONE_NUMBER = "SELECT * FROM users WHERE phone_number = ?"
 const GET_USER_STATEMENT_BY_PHONE_NUMBER_AND_DEVICE_ID = "SELECT * FROM users WHERE phone_number = ? and device_id = ?"
 const UPDATE_USER_STATEMENT_BY_PHONE_NUMBER = "UPDATE users SET device_id = ? WHERE phone_number = ?"
+const UPDATE_USER_BALANCE_STATEMENT_BY_USER_ID = "UPDATE users SET wallet_balance = ? WHERE user_id = ?"
 const UPDATE_USER_INFORMATION_BY_USER_ID = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, date_of_birth = ?, emergency_phone_number = ?, license_plate = ?, brand = ?, model = ?, color = ?  WHERE user_id = ? "
 
 exports.addUser = (user) => {
@@ -84,7 +85,7 @@ exports.updateUserInfomationByUserId = (user) => {
 
 exports.updateUserBalance = (userId, balance) => {
     return new Promise((resolve, reject) => {
-        db.query('', [], (err, result) => {
+        db.query(UPDATE_USER_BALANCE_STATEMENT_BY_USER_ID, [balance, userId], (err, result) => {
             if (err) reject(err);
             resolve(result);
         });
