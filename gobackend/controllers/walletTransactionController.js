@@ -1,4 +1,5 @@
 const db = require("../models/db")
+const moment = require("moment");
 
 exports.addWalletTransaction = (wallet) => {
     return new Promise((resolve, reject) => {
@@ -16,8 +17,9 @@ exports.addWalletTransaction = (wallet) => {
 }
 
 exports.updateWalletTransactionById = (id, status) => {
+    const now = moment().format("YYYY-MM-DD hh:mm:ss");
     return new Promise((resolve, reject) => {
-        db.query(`UPDATE wallet_transactions SET status = ?, updated_at = ? WHERE wallet_transaction_id = ?`, [id, status], (err, result) => {
+        db.query(`UPDATE wallet_transactions SET status = ?, updated_at = ? WHERE wallet_transaction_id = ?`, [status, now, id], (err, result) => {
             if (err) reject(err);
             resolve(result);
         });
