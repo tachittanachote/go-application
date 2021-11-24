@@ -122,7 +122,7 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
 
 router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
     const id = req.body.qrcode_id;
-    if (!id) return res.json("success");
+    if (!id) return res.json("error");
     const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
     console.log(wallet)
     res.json("success")
