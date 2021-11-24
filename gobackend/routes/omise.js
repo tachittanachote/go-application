@@ -133,8 +133,6 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
 router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
     const id = req.body.qrcode_id;
     if (!id) return res.json("error");
-    const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
-    if (wallet.affectedRows !== 1) return res.json("error");
     var options = {
         'method': 'POST',
         'url': `https://api.omise.co/charges/chrg_test_${id}/mark_as_failed`,
@@ -143,11 +141,12 @@ router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
         }
     };
     request(options, function (error, response) {
-        if (error) throw new Error(error);
-        console.log(response.body);
+        if (error) return res.json("error");
+        const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
+        if (wallet.affectedRows !== 1) return res.json("error");
+        if (response.body.status !== 'failed') return res.json("error");
+        return res.json("success")
     });
-
-    
 })
 
 
