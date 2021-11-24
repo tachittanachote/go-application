@@ -106,7 +106,16 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
             }
             return res.json(data)
         }
-        console.log(resp)
+
+        const id = resp.id.split("_")[2];
+        const data = {
+            status: "success",
+            image_uri: `https://www.gotogetherapp.me/static/qrcode/${id}.png`,
+            qr_id: id,
+            amount: resp.amount,
+            expires: resp.expires_at
+        }
+        return res.json(data)
     });
 
 });
