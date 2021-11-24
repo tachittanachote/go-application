@@ -23,6 +23,7 @@ class PromptPayScreen extends Component {
             confirmTransferTime: false,
             confirmBtnColor: COLORS.lightGray2,
             accepted: false,
+            isCheck: false,
             isLoadQRCode: false,
             QRCode: null,
             sourceId: null,
@@ -40,8 +41,21 @@ class PromptPayScreen extends Component {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
-        }).then((resp) => {
-            console.log(resp.data)
+        }).then((res) => {
+            if (res.data.status === 'success') {
+                this.setState({
+                    isCheck: true,
+                    isLoadQRCode: true,
+                    sourceId: res.data.qr_id,
+                    expires_at: res.data.expires_at
+                }, () => {
+                    this.setState({ QRCode: res.data.image_uri });
+                })
+            }else {
+                this.setState({
+                    isCheck: true
+                })
+            }
         }).catch((e) => {
             console.log(e)
         })
@@ -337,7 +351,17 @@ class PromptPayScreen extends Component {
     }
 
     handleCancelDeposit() {
-        console.log("cancel")
+        axios.post('/omise/cancel', {}, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((res) => {
+            this.setState({
+                isLoadQRCode: true,
+            })
+        }).catch((e) => {
+            console.log(e)
+        })
     }
 
     render() {
@@ -357,7 +381,11 @@ class PromptPayScreen extends Component {
                 </View>
 
                 <ScrollView>
-                    {this.state.isLoadQRCode ? this.renderQRCode(this.state.QRCode, this.state.amount, this.state.sourceId, this.state.expires_at) : this.renderRequireAmount()}
+                    {this.state.isCheck ? 
+                        this.state.isLoadQRCode ? this.renderQRCode(this.state.QRCode, this.state.amount, this.state.sourceId, this.state.expires_at) : this.renderRequireAmount()
+                        :
+                        <Text>Loading</Text>
+                    }
                 </ScrollView>
 
             </SafeAreaView>

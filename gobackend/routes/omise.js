@@ -120,5 +120,9 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
 
 });
 
+router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
+    console.log("d")
+})
+
 
 module.exports = router;
