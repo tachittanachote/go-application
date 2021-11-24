@@ -87,7 +87,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                 const wallet = {
                     id: id,
                     user_id: req.user.user_id,
-                    amount: amount,
+                    amount: amount / 100,
                     type: 'promptpay',
                 }
 
