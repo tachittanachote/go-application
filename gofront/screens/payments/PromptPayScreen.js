@@ -350,7 +350,7 @@ class PromptPayScreen extends Component {
         )
     }
 
-    handleCancelDeposit() {
+    async handleCancelDeposit() {
         axios.post('/omise/cancel', {}, {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
