@@ -2,7 +2,7 @@ const db = require("../models/db")
 
 exports.addWalletTransaction = (wallet) => {
     return new Promise((resolve, reject) => {
-        db.query(`INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type) VALUES ('?', ?, '?', ?, '?')`, 
+        db.query(`INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type) VALUES (?, ?, ?, ?, ?)`, 
             [
                 wallet.id, 
                 wallet.user_id, 
@@ -28,7 +28,7 @@ exports.updateWalletTransactionById = (id, status) => {
 
 exports.getWalletTransactionById = (id) => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM wallet_transactions WHERE wallet_transaction_id = '?'`, [id], (err, result) => {
+        db.query(`SELECT * FROM wallet_transactions WHERE wallet_transaction_id = ?`, [id], (err, result) => {
             if (err) reject(err);
             resolve(result);
         });

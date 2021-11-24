@@ -98,6 +98,7 @@ class Lobby extends Component {
         return (
             <SafeAreaView style={styles.container}>
 
+                <ScrollView>
                 <View style={{
                     top: 0,
                     height: SIZES.height * (25 / 100),
@@ -234,7 +235,6 @@ class Lobby extends Component {
                 </View>
 
                 <View style={{
-                    marginTop: 60,
                     flexDirection: 'row',
                     padding: SIZES.padding,
                 }}>
@@ -258,7 +258,7 @@ class Lobby extends Component {
                 </View>
 
                 <Slider></Slider>
-
+                </ScrollView>
             </SafeAreaView>
         );
     }

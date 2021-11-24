@@ -8,6 +8,7 @@ import { COLORS, FONTS, SIZES } from '../../constants';
 import axios from 'axios'
 import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Omise.config('pkey_test_5pwlho38cug2ym4yiao', '2017-11-02');
 
@@ -33,9 +34,13 @@ class PromptPayScreen extends Component {
         this.checkPendingTransaction()
     }
 
-    checkPendingTransaction() {
-        axios.post('/omise/check').then((resp) => {
-            
+    async checkPendingTransaction() {
+        axios.post('/omise/check', {}, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((resp) => {
+            console.log("K")
         }).catch((e) => {
             console.log(e)
         })
@@ -53,6 +58,10 @@ class PromptPayScreen extends Component {
             amount: omiseResponse.amount,
             source_id: omiseResponse.id,
             currency: omiseResponse.currency
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
         }).then((res) => {
             if (res.data.status === 'success') {
                 this.setState({
