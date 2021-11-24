@@ -41,7 +41,7 @@ class PromptPayScreen extends Component {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
         }).then((resp) => {
-            console.log("K")
+            console.log(resp.data)
         }).catch((e) => {
             console.log(e)
         })

@@ -36,7 +36,7 @@ exports.getWalletTransactionById = (id) => {
 
 exports.getPendingWalletTransactionByUserId = (id, type) => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM wallet_transactions WHERE user_id = ? and status = 'pending' and type = ?`, [id, type], (err, result) => {
+        db.query(`SELECT * FROM wallet_transactions WHERE user_id = ? and status = 'pending' and type = ? order by created_at desc limit 1`, [id, type], (err, result) => {
             if (err) reject(err);
             resolve(result);
         });
