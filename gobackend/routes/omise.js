@@ -23,7 +23,7 @@ router.post("/events", async (req, res) => {
         //Add User Balance
         const user = await userController.getUserById(walletInfo[0].user_id)
         const updateState = await userController.updateUserBalance(user[0].user_id, user[0].wallet_balance + req.body.data.amount / 100)
-
+        console.log(updateState)
         if (updateState.affectedRows !== 1) return res.json("error")
 
         return res.json("success")
