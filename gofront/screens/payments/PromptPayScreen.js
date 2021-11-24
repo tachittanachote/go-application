@@ -360,7 +360,11 @@ class PromptPayScreen extends Component {
         }).then((res) => {
             console.log(res.data)
             this.setState({
-                isLoadQRCode: true,
+                isLoadQRCode: false,
+                amount: null,
+                confirmAmount: false,
+                confirmUsage: false,
+                confirmTransferTime: false,
             })
         }).catch((e) => {
             console.log(e)

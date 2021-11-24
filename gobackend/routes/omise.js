@@ -12,7 +12,9 @@ const omise = require('omise')({
 });
 
 router.post("/events", async (req, res) => {
-    console.log(req.body)
+    if(req.body.key === 'charge.complete') {
+        const wallet = await walletTransactionController.updateWalletTransactionById(id, "success")
+    }
 });
 
 router.post("/create", middleware.verifySessionToken, async (req, res) => {
@@ -124,7 +126,7 @@ router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
     const id = req.body.qrcode_id;
     if (!id) return res.json("error");
     const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
-    console.log(wallet)
+    if (wallet.affectedRows !== 1) return res.json("error");
     res.json("success")
 })
 
