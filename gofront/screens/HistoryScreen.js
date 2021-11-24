@@ -62,9 +62,18 @@ class HistoryScreen extends Component {
         .then((e) => {
           console.log(e.data.name);
           if (e.data.name == undefined) {
-            resolve("unamed road");
+            let address = {
+              name:"unnamed place",
+              address: [coordinates[0],coordinates[1],""],
+            }
+            resolve(address);
           }
-          resolve(e.data.name);
+          console.log(e.data.formatted_address);
+          let address = {
+            name:e.data.name,
+            address: e.data.formatted_address.split(","),
+          }
+          resolve(address);
         })
         .catch((e) => {
           console.log(e);
@@ -244,7 +253,7 @@ class HistoryScreen extends Component {
                               source={images.origin_icon}
                               style={{ height: 20, width: 20 }}
                             ></Image>
-                            {history.originName}
+                            {history.originName.name}
                           </Text>
                           <Text
                             style={{
@@ -256,7 +265,7 @@ class HistoryScreen extends Component {
                               source={images.destination_icon}
                               style={{ height: 20, width: 20 }}
                             ></Image>
-                            {history.destinationName}
+                            {history.destinationName.name}
                           </Text>
                         </View>
                       </View>

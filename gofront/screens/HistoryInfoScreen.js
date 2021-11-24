@@ -290,16 +290,16 @@ class HistoryInfoScreen extends Component {
             justifyContent: "space-between",
           }}
         >
-        <Text
+          <Text
             style={{
               color: COLORS.lightGray2,
               ...FONTS.h4,
             }}
           >
-            รูปแบบการชำระ
+            รูปแบบการชำระเงิน
           </Text>
           <Text>เงินสด</Text>
-          </View>
+        </View>
       </View>
     );
   };
@@ -367,7 +367,7 @@ class HistoryInfoScreen extends Component {
                     source={images.origin_icon}
                     style={{ height: 20, width: 20 }}
                   ></Image>
-                  {this.props.route.params.history.originName}
+                  {this.props.route.params.history.originName.name}
                 </Text>
                 <Text
                   style={{
@@ -380,6 +380,16 @@ class HistoryInfoScreen extends Component {
                   )}
                 </Text>
               </View>
+              <Text
+                style={{
+                  color: COLORS.lightGray,
+                  ...FONTS.body4,
+                  paddingLeft: "5%",
+                }}
+              >
+                {this.props.route.params.history.originName.address[0]},{" "}
+                {this.props.route.params.history.originName.address[1]}
+              </Text>
 
               <View
                 style={{
@@ -397,7 +407,7 @@ class HistoryInfoScreen extends Component {
                     source={images.destination_icon}
                     style={{ height: 20, width: 20 }}
                   ></Image>
-                  {this.props.route.params.history.destinationName}
+                  {this.props.route.params.history.destinationName.name}
                 </Text>
                 <Text
                   style={{
@@ -415,14 +425,53 @@ class HistoryInfoScreen extends Component {
                 style={{
                   color: COLORS.lightGray,
                   ...FONTS.body4,
+                  paddingLeft: "5%",
+                  marginBottom: "3%",
                 }}
               >
-                ระยะทาง {this.props.route.params.history.distance} ก.ม.
+                {this.props.route.params.history.destinationName.address[0]},{" "}
+                {this.props.route.params.history.destinationName.address[1]}
               </Text>
+
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+
+                  borderTopColor: "black",
+                  borderTopWidth: 1,
+                }}
+              >
+                <Text
+                  style={{
+                    color: COLORS.lightGray,
+                    ...FONTS.body3,
+                    marginLeft: "5%",
+                  }}
+                >
+                  ระยะทาง
+                </Text>
+                <Text
+                  style={{
+                    color: COLORS.lightGray,
+                    ...FONTS.body4,
+                    //alignSelf: "flex-end",
+                  }}
+                >
+                  {this.props.route.params.history.distance} ก.ม.
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-        {this.state.feedbackInfo ? <>{this.feedbackPage()}{this.paidInfo()}</> : this.infoPage()}
+        {this.state.feedbackInfo ? (
+          <>
+            {this.feedbackPage()}
+            {this.paidInfo()}
+          </>
+        ) : (
+          this.infoPage()
+        )}
       </SafeAreaView>
     );
   }
