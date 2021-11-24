@@ -46,7 +46,7 @@ class Balance extends Component {
                 <View style={{
                     marginLeft: 5,
                 }}>
-                    <Text>$ 29.00</Text>
+                        <Text>$ {this.props.balance}</Text>
                 </View>
                 <View style={{
                     alignItems: 'flex-end',
