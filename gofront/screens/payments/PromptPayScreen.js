@@ -351,13 +351,20 @@ class PromptPayScreen extends Component {
     }
 
     async handleCancelDeposit() {
-        axios.post('/omise/cancel', {}, {
+        axios.post('/omise/cancel', {
+            qrcode_id: this.state.sourceId
+        }, {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
         }).then((res) => {
+            console.log(res.data)
             this.setState({
-                isLoadQRCode: true,
+                isLoadQRCode: false,
+                amount: null,
+                confirmAmount: false,
+                confirmUsage: false,
+                confirmTransferTime: false,
             })
         }).catch((e) => {
             console.log(e)

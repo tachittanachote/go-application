@@ -43,6 +43,22 @@ class UserProvider extends Component {
     })
   }
 
+  refreshUser = async (callback) => {
+    axios.post('/user', {}, {
+      headers:
+      {
+        authorization: "Bearer " + await AsyncStorage.getItem("session_token")
+      }
+    }).then(async (e) => {
+      this.setState({ user: e.data}, () => {
+        callback(this.state.user)
+      });
+    }).catch((e) => {
+      console.log(e)
+    })
+  }
+
+
   updateContext = () => {
     console.log("Update Context!!!!")
     this.getProfile();
@@ -84,7 +100,7 @@ class UserProvider extends Component {
     return (
       <>
         {this.state.init &&
-          <UserContext.Provider value={{ user: this.state.user, updateContext:this.updateContext, setOffInit:this.setOffInit, isAuthenticated: this.state.isAuthenticated, initPage: this.state.initPage, newRegisterInit: this.newRegisterInit}}>
+          <UserContext.Provider value={{ user: this.state.user, updateContext: this.updateContext, refreshUser: this.refreshUser, setOffInit:this.setOffInit, isAuthenticated: this.state.isAuthenticated, initPage: this.state.initPage, newRegisterInit: this.newRegisterInit}}>
             {this.props.children}
           </UserContext.Provider>
         }

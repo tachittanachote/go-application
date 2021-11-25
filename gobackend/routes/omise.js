@@ -4,6 +4,7 @@ const svg2img = require('svg2img');
 const fs = require('fs');
 const router = express.Router();
 const walletTransactionController = require('../controllers/walletTransactionController')
+const userController = require('../controllers/userController')
 const middleware = require('../middleware')
 
 const omise = require('omise')({
@@ -12,7 +13,22 @@ const omise = require('omise')({
 });
 
 router.post("/events", async (req, res) => {
-    console.log(req.body)
+    if (req.body.key === 'charge.complete' && req.body.data.status === 'successful') {
+        const id = req.body.data.id.split("_")[2];
+        const wallet = await walletTransactionController.updateWalletTransactionById(id, "success")
+        if (wallet.affectedRows !== 1) return res.json("error")
+
+        const walletInfo = await walletTransactionController.getWalletTransactionById(id)
+        //Get User Id
+        //Add User Balance
+        const user = await userController.getUserById(walletInfo[0].user_id)
+        const updateState = await userController.updateUserBalance(user[0].user_id, user[0].wallet_balance + req.body.data.amount / 100)
+        console.log(updateState)
+        if (updateState.affectedRows !== 1) return res.json("error")
+
+        return res.json("success")
+    }
+    return res.json("error")
 });
 
 router.post("/create", middleware.verifySessionToken, async (req, res) => {
@@ -71,7 +87,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                 const wallet = {
                     id: id,
                     user_id: req.user.user_id,
-                    amount: amount,
+                    amount: amount / 100,
                     type: 'promptpay',
                 }
 
@@ -123,9 +139,20 @@ router.post('/check', middleware.verifySessionToken, async (req, res) => {
 router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
     const id = req.body.qrcode_id;
     if (!id) return res.json("error");
-    const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
-    console.log(wallet)
-    res.json("success")
+    var options = {
+        'method': 'POST',
+        'url': `https://api.omise.co/charges/chrg_test_${id}/mark_as_failed`,
+        'headers': {
+            'Authorization': 'Basic c2tleV90ZXN0XzVweGMxMzBqdzd4NDdwZ2UzcDM6'
+        }
+    };
+    request(options, async function (error, response) {
+        if (error) return res.json("error");
+        const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
+        if (wallet.affectedRows !== 1) return res.json("error");
+        if (response.body.status !== 'failed') return res.json("error");
+        return res.json("success")
+    });
 })
 
 

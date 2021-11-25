@@ -6,7 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  ScrollView
+  ScrollView,
+  RefreshControl
 } from 'react-native';
 import { SwipeablePanel } from 'rn-swipeable-panel';
 import { Icon } from 'react-native-elements';
@@ -28,12 +29,19 @@ class WalletScreen extends Component {
       panelProps: {
         fullWidth: true,
         onlySmall: true,
+        refreshing: false,
         onClose: () => this.closePanel(),
         onPressCloseButton: () => this.closePanel(),
       },
     }
   }
 
+  onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.context.refreshUser((e) => {
+      this.setState({ refreshing: false });
+    })
+  };
 
   navigate(screen) {
     return this.props.navigation.navigate(screen)
@@ -101,7 +109,7 @@ class WalletScreen extends Component {
                 <View>
                   <Text>Credit Card</Text>
                 </View>
-                <View style={{ flex: 2, alignItems: 'flex-end'}}>
+                <View style={{ flex: 2, alignItems: 'flex-end' }}>
                   <Icon
                     type='ionicon'
                     name='chevron-forward-outline'
@@ -125,98 +133,109 @@ class WalletScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <BackButton navigation={this.props.navigation}></BackButton>
-        <View style={{
-          position: 'absolute',
-          width: '100%',
-          alignItems: 'center',
-          marginTop: SIZES.margin * 1.35
-        }}>
-          <Text style={{
-            fontWeight: 'bold',
-            fontSize: SIZES.body3
-          }}>วิธีการชำระเงิน</Text>
-        </View>
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
+            title="Pull to refresh"
+          />
+        }
+        >
 
-
-        <View style={{
-          margin: SIZES.margin,
-          backgroundColor: COLORS.white,
-          borderRadius: SIZES.radius,
-          backgroundColor: COLORS.white,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 3,
-            height: 3,
-          },
-          shadowOpacity: 0.20,
-          shadowRadius: 1.41,
-
-          elevation: 5,
-          position: 'relative',
-          height: SIZES.height * (22 / 100),
-        }}>
-
-          <View><Text style={{
-            fontSize: SIZES.h3,
-            color: COLORS.purple,
-            paddingLeft: SIZES.padding,
-            paddingTop: SIZES.padding,
-            fontWeight: 'bold'
-          }}>GoPay Wallet</Text></View>
-          <View style={{
-            flexDirection: 'row',
-            paddingLeft: SIZES.padding,
-          }}>
-            <Icon
-              type='foundation'
-              name='dollar'
-              size={22}
-              color={COLORS.lightGray2}
-            />
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              alignItems: 'center',
+              marginTop: SIZES.margin * 1.35
+            }}>
             <Text style={{
-              paddingLeft: SIZES.padding,
-              ...FONTS.h1
-            }}>{this.context.user.wallet_balance}</Text>
+              fontWeight: 'bold',
+              fontSize: SIZES.body3
+            }}>วิธีการชำระเงิน</Text>
           </View>
-
 
 
           <View style={{
-            position: 'absolute',
-            bottom: 0,
-            padding: SIZES.padding * 2.5,
-            borderTopWidth: 1,
-            borderTopColor: COLORS.lightGray3,
-            flex: 2,
-            width: '100%',
-            flexDirection: 'row',
-            alignItems: 'center'
+            margin: SIZES.margin,
+            backgroundColor: COLORS.white,
+            borderRadius: SIZES.radius,
+            backgroundColor: COLORS.white,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 3,
+              height: 3,
+            },
+            shadowOpacity: 0.20,
+            shadowRadius: 1.41,
+
+            elevation: 5,
+            position: 'relative',
+            height: SIZES.height * (22 / 100),
           }}>
-            <TouchableOpacity style={{
+
+            <View><Text style={{
+              fontSize: SIZES.h3,
+              color: COLORS.purple,
+              paddingLeft: SIZES.padding,
+              paddingTop: SIZES.padding,
+              fontWeight: 'bold'
+            }}>GoPay Wallet</Text></View>
+            <View style={{
               flexDirection: 'row',
-            }} onPress={() => this.setState({ isPanelActive: true })}>
-              <View>
-                <Text style={{
-                  fontWeight: 'bold',
-                  color: COLORS.bluesky,
-                  fontSize: SIZES.body4,
-                }}>เติมเงินเพื่อใช้การชำระโดยไม่ใช้เงินสด!</Text>
-              </View>
-              <View style={{
-                flex: 1,
-                alignItems: 'flex-end'
-              }}>
-                <Icon
-                  type='ionicon'
-                  name='chevron-forward-outline'
-                  size={22}
-                  color={COLORS.lightGray2}
-                />
-              </View>
-            </TouchableOpacity>
+              paddingLeft: SIZES.padding,
+            }}>
+              <Icon
+                type='foundation'
+                name='dollar'
+                size={22}
+                color={COLORS.lightGray2}
+              />
+              <Text style={{
+                paddingLeft: SIZES.padding,
+                ...FONTS.h1
+              }}>{this.context.user.wallet_balance}</Text>
+            </View>
+
+
+
+            <View style={{
+              position: 'absolute',
+              bottom: 0,
+              padding: SIZES.padding * 2.5,
+              borderTopWidth: 1,
+              borderTopColor: COLORS.lightGray3,
+              flex: 2,
+              width: '100%',
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}>
+              <TouchableOpacity style={{
+                flexDirection: 'row',
+              }} onPress={() => this.setState({ isPanelActive: true })}>
+                <View>
+                  <Text style={{
+                    fontWeight: 'bold',
+                    color: COLORS.bluesky,
+                    fontSize: SIZES.body4,
+                  }}>เติมเงินเพื่อใช้การชำระโดยไม่ใช้เงินสด!</Text>
+                </View>
+                <View style={{
+                  flex: 1,
+                  alignItems: 'flex-end'
+                }}>
+                  <Icon
+                    type='ionicon'
+                    name='chevron-forward-outline'
+                    size={22}
+                    color={COLORS.lightGray2}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+
           </View>
 
-        </View>
 
         <View
 
@@ -368,12 +387,13 @@ class WalletScreen extends Component {
 
           </ScrollView>
 
-          <SwipeablePanel {...this.state.panelProps} isActive={this.state.isPanelActive}>
-            {this.renderContent()}
-          </SwipeablePanel>
+
 
         </View>
-
+        </ScrollView>
+        <SwipeablePanel {...this.state.panelProps} isActive={this.state.isPanelActive}>
+          {this.renderContent()}
+        </SwipeablePanel>
       </SafeAreaView>
     );
   }
