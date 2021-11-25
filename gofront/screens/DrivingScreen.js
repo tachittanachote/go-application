@@ -159,9 +159,9 @@ class DrivingScreen extends Component {
             }
         }).then((e) => {
             if(e.data === "success") {
-                console.log('history record had updated!')
+                console.log('passenger history record had updated!')
             }else{
-                console.log('history update errorrrrr')
+                console.log('passenger history update errorrrrr')
             }
         }).catch((e) => {
             console.log(e)
@@ -197,8 +197,8 @@ class DrivingScreen extends Component {
                         }
                     }).then(async (e) => {
                         if (e.data.status === "success") {
-                           
-                            await recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
+                           console.log(e.data)
+                            await this.recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
                             //Alert.alert("สำเร็จ")
                         }
                     }).catch((e) => {
