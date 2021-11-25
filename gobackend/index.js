@@ -12,14 +12,11 @@ const authRoute = require("./routes/auth");
 const invoiceRoute = require("./routes/invoices");
 const locationRoute = require("./routes/location");
 const profileRoute = require("./routes/profile");
-<<<<<<< HEAD
 const emergencyRoute = require("./routes/emergency")
-=======
 const omiseRoute = require("./routes/omise");
 const historyRoute = require("./routes/history");
 const feedbackRoute = require("./routes/feedback");
 
->>>>>>> ee029323827731378bb4f71af9a16254941be8b8
 //Middleware
 const middleware = require("./middleware");
 
