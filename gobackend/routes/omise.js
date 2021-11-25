@@ -28,6 +28,13 @@ router.post("/events", async (req, res) => {
 
         return res.json("success")
     }
+
+    if (req.body.key === 'charge.complete' && req.body.data.status === 'failed') {
+        const id = req.body.data.id.split("_")[2];
+        const wallet = await walletTransactionController.updateWalletTransactionById(id, "cancel")
+        if (wallet.affectedRows !== 1) return res.json("error")
+        return res.json("success")
+    }
     return res.json("error")
 });
 
