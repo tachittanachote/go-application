@@ -5,7 +5,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
 
 import { getDeltaCoordinates, requestGeolocationPermission } from '../utils';
-import { BackButton, HorizontalLine, Note, Preload, DriverInformation, Title, PassengerFilter } from '../components';
+import { BackButton, HorizontalLine, Note, Preload, DriverInformation, Title, PassengerFilter, PaymentOptions } from '../components';
 import { COLORS, FONTS, GOOGLE_API_KEY, images, MAPS, SIZES } from '../constants';
 import axios from 'axios';
 import { UserContext } from '../context';
@@ -319,18 +319,28 @@ class PassengerScreen extends PureComponent {
 
                             : this.state.travelInfo ?
 
+                            
                                 <View style={{
                                     position: 'absolute',
                                     width: '100%',
                                     bottom: 0,
                                     borderTopLeftRadius: SIZES.radius * 2,
                                     borderTopRightRadius: SIZES.radius * 2,
-                                    maxHeight: SIZES.height * (50 / 100),
+                                    maxHeight: SIZES.height * (60 / 100),
                                     backgroundColor: COLORS.white,
                                     padding: SIZES.padding * 2.5
                                 }}>
 
+                                    
                                     <DriverInformation driver={this.state.driverInformation} onCallBack={(e) => this.getDriverInformation(e)}></DriverInformation>
+
+
+                                    <Text style={{
+                                        color: COLORS.darkpurple,
+                                        ...FONTS.h5
+                                    }}>วิธีการชำระเงิน</Text>
+                                    <PaymentOptions balance={this.context.user.wallet_balance} estPrice={this.state.travelInfo.price}></PaymentOptions>
+
                                     <HorizontalLine></HorizontalLine>
 
                                     <Text style={{
