@@ -23,9 +23,11 @@ class PaymentOptions extends Component {
     paymentOptionFormatter(paymentOption) {
         switch (paymentOption) {
             case 'cash': {
+                this.props.onPaymentOptionCallback(paymentOption)
                 return 'ชำระด้วยเงินสด'
             }
             case 'wallet': {
+                this.props.onPaymentOptionCallback(paymentOption)
                 return 'ขำระด้วยกระเป๋าตัง Go Wallet'
             }
         }

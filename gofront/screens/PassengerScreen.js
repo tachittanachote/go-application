@@ -39,6 +39,8 @@ class PassengerScreen extends PureComponent {
         this.getDriverInformation = this.getDriverInformation.bind(this);
         this.getNote = this.getNote.bind(this);
         this.onFilterCallback = this.onFilterCallback.bind(this);
+        this.onPaymentOptionCallback = this.onPaymentOptionCallback.bind(this);
+        
     }
 
     componentDidMount = async () => {
@@ -240,6 +242,10 @@ class PassengerScreen extends PureComponent {
         //clearInterval(this.fetchCarInterval);
     }
 
+    onPaymentOptionCallback = (value) => {
+        console.log(value)
+    }
+
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -339,7 +345,7 @@ class PassengerScreen extends PureComponent {
                                         color: COLORS.darkpurple,
                                         ...FONTS.h5
                                     }}>วิธีการชำระเงิน</Text>
-                                    <PaymentOptions balance={this.context.user.wallet_balance} estPrice={this.state.travelInfo.price}></PaymentOptions>
+                                    <PaymentOptions balance={this.context.user.wallet_balance} estPrice={this.state.travelInfo.price} onPaymentOptionCallback={(e) => this.onPaymentOptionCallback(e)}></PaymentOptions>
 
                                     <HorizontalLine></HorizontalLine>
 
