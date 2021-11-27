@@ -32,6 +32,7 @@ class MenuButton extends Component {
         var token = await AsyncStorage.getItem('session_token')
 
         var decoded = jwt(token)
+        console.log(token)
         console.log(decoded.user_id)
 
         axios.post('/user/driververify/' + decoded.user_id, {}, {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput } from 'react-native';
-import { Picker } from "@react-native-picker/picker"
+import { Picker } from "@react-native-community/picker"
 import moment from 'moment';
 import axios from 'axios';
 import { Icon } from 'react-native-elements';

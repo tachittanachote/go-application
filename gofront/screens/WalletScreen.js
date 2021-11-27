@@ -10,12 +10,15 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   RefreshControl,
+  
 } from "react-native";
 import { SwipeablePanel } from "rn-swipeable-panel";
 import { Icon } from "react-native-elements";
 import { BackButton } from "../components";
 
 import { COLORS, SIZES, FONTS } from "../constants";
+
+import { Pickr } from '@react-native-picker/picker'
 
 import _ from "lodash";
 import { UserContext } from "../context";
@@ -28,6 +31,14 @@ class WalletScreen extends Component {
     super(props);
     this.state = {
       isPanelActive: false,
+      iswithDrawPanelActive: false,
+      panelWithDrawProps: {
+        fullWidth: true,
+        openLarge: true,
+        refreshing: false,
+        onClose: () => this.closePanelWithDraw(),
+        onPressCloseButton: () => this.closePanelWithDraw(),
+      },
       panelProps: {
         fullWidth: true,
         onlySmall: true,
@@ -143,8 +154,34 @@ class WalletScreen extends Component {
     );
   }
 
+  renderWithdrawContent() {
+    console.log("render!");
+
+    return (
+      <View
+        style={{
+          padding: SIZES.padding,
+        }}
+      >
+        <Picker
+          selectedValue={selectedValue}
+          style={{ height: 50, width: 150 }}
+          onValueChange={(itemValue, itemIndex) => console.log(itemValue)}
+        >
+          <Picker.Item label="Java" value="java" />
+          <Picker.Item label="JavaScript" value="js" />
+        </Picker>
+        <Text>ทดสอบ</Text>
+      </View>
+    );
+  }
+
   closePanel = () => {
     this.setState({ isPanelActive: false });
+  };
+
+  closePanelWithDraw = () => {
+    this.setState({ iswithDrawPanelActive: false });
   };
 
   checkWalletTransaction = async () => {
@@ -364,6 +401,7 @@ class WalletScreen extends Component {
                       style={{
                         flexDirection: "row",
                       }}
+                      onPress={() => this.setState({ iswithDrawPanelActive: true })}
                     >
                       <Icon
                         type="ionicon"
@@ -612,6 +650,14 @@ class WalletScreen extends Component {
         >
           {this.renderContent()}
         </SwipeablePanel>
+
+        <SwipeablePanel
+          {...this.state.panelWithDrawProps}
+          isActive={this.state.iswithDrawPanelActive}
+        >
+          {this.renderWithdrawContent()}
+        </SwipeablePanel>
+
       </SafeAreaView>
     );
   }

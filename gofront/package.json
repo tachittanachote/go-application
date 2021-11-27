@@ -13,7 +13,7 @@
     "@react-native-async-storage/async-storage": "^1.15.8",
     "@react-native-community/checkbox": "^0.5.9",
     "@react-native-community/geolocation": "^2.0.2",
-    "@react-native-picker/picker": "^2.1.0",
+    "@react-native-community/picker": "^1.8.1",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/stack": "^6.0.7",
     "axios": "^0.21.4",
