@@ -75,14 +75,16 @@ router.post("/update", async (req, res) => {
                 user_id: driverInfo.id, 
                 status : "success",
                 amount: info.amount,
-                type: 'income_wallet',
+                type: 'wallet',
+                action: 'in'
             }
             PassengerWallet = {
                 id:"GO"+uuidv4(),
                 user_id: passenger.id, 
                 status : "success",
                 amount: info.amount,
-                type: 'outcome_wallet',
+                type: 'wallet',
+                action: 'out',
             }
             let walletD = await walletTransactionController.addWalletTransactionByTravel(DriverWallet)
             let walletP = await walletTransactionController.addWalletTransactionByTravel(PassengerWallet)

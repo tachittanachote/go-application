@@ -3,7 +3,7 @@ const moment = require("moment");
 
 exports.addWalletTransaction = (wallet) => {
     return new Promise((resolve, reject) => {
-        db.query(`INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type) VALUES (?, ?, 'pending', ?, ?)`, 
+        db.query(`INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type,) VALUES (?, ?, 'pending', ?, ?)`, 
             [
                 wallet.id, 
                 wallet.user_id, 
@@ -46,7 +46,7 @@ exports.getPendingWalletTransactionByUserId = (id, type) => {
 }
 
 exports.addWalletTransactionByTravel = (wallet) => {
-    const UPDATE = "INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type) VALUES ?"
+    const UPDATE = "INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type, action) VALUES ?"
     const now = moment().format("YYYY-MM-DD hh:mm:ss");
     //console.log("controller said:",wallet)
     //var now = moment().format("YYYY-MM-DD hh:mm:ss");
@@ -56,6 +56,7 @@ exports.addWalletTransactionByTravel = (wallet) => {
         wallet.status,
         wallet.amount,
         wallet.type,
+        wallet.action,
     ]];
     return new Promise((resolve, reject) => {
         db.query(UPDATE, [values], (err, result) => {
