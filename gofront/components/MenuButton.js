@@ -25,7 +25,7 @@ class MenuButton extends Component {
         var decoded = jwt(token)
         console.log(decoded.user_id)
 
-        axios.post('/driververify/' + decoded.user_id, {}, {
+        axios.post('/user/driververify/' + decoded.user_id, {}, {
             headers: {
                 authorization: 'Bearer ' + token
             }
