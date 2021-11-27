@@ -49,5 +49,18 @@ router.post('/:id', async(req, res) => {
 });
 
 
+router.post('/:id', async (req, res) => {
+
+    if (req.user.user_id === req.params.id) {
+        const result = userController.getVerifyStatusByUserId(req.user.user_id)
+        console.log(result)
+        res.json(result)
+    }
+    else {
+        res.json("Conflict")
+    }
+
+})
+
 
 module.exports = router;

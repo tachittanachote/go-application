@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { Component } from 'react';
 import { TouchableWithoutFeedback, View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
@@ -7,7 +8,27 @@ import { COLORS, FONTS, SIZES } from '../constants';
 class MenuButton extends Component {
 
     handlePress = (routeName) => {
-        this.props.navigation.navigate(routeName);
+        if (this.props.to === "DriverScreen") {
+            checkDriverVerified(routeName)
+        }
+        else {
+            this.props.navigation.navigate(routeName);
+        }
+        
+    }
+
+    checkDriverVerified(route) {
+        axios.post('/user/driververify').then((resp) => {
+            if(resp.data === "verified") {
+                this.props.navigation.navigate(route);
+            }
+            else {
+                alert(resp.data)
+            }
+            console.log(resp)
+        }).catch((e) => {
+            console.log(e)
+        })
     }
 
     render() {

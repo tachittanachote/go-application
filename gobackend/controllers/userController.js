@@ -91,3 +91,12 @@ exports.updateUserBalance = (userId, balance) => {
         });
     });
 }
+
+exports.getVerifyStatusByUserId = (userId) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT verify_driver FROM users WHERE user_id = ?', [userId], (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+}
