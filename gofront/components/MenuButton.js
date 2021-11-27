@@ -2,30 +2,41 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import { TouchableWithoutFeedback, View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt from 'jwt-decode'
 import { COLORS, FONTS, SIZES } from '../constants';
 
 class MenuButton extends Component {
 
     handlePress = (routeName) => {
         if (this.props.to === "DriverScreen") {
-            checkDriverVerified(routeName)
+            this.checkDriverVerified(routeName)
         }
         else {
             this.props.navigation.navigate(routeName);
         }
-        
+
     }
 
-    checkDriverVerified(route) {
-        axios.post('/user/driververify').then((resp) => {
-            if(resp.data === "verified") {
+    async checkDriverVerified(route) {
+
+        var token = await AsyncStorage.getItem('session_token')
+
+        var decoded = jwt(token)
+        console.log(decoded.user_id)
+
+        axios.post('/driververify/' + decoded.user_id, {}, {
+            headers: {
+                authorization: 'Bearer ' + token
+            }
+        }).then((resp) => {
+            if (resp.data === "verified") {
                 this.props.navigation.navigate(route);
             }
             else {
                 alert(resp.data)
             }
-            console.log(resp)
+            console.log(resp.data)
         }).catch((e) => {
             console.log(e)
         })
@@ -39,7 +50,7 @@ class MenuButton extends Component {
                         name={this.props.iconName ? this.props.iconName : "question"}
                         type='font-awesome-5'
                         color='#C6BDFF'
-                        size={SIZES.width * (15/ 100)}
+                        size={SIZES.width * (15 / 100)}
                     />
                     <View style={styles.bottomLabel}>
                         <Text style={styles.bottomLabelFont}>{this.props.buttonLabel}</Text>
