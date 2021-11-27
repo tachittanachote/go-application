@@ -443,7 +443,7 @@ class WalletScreen extends Component {
                       marginTop: SIZES.margin,
                     }}
                   >
-                    {transaction.action === "withdraw" ? (
+                    {transaction.action === "deposit" ? (
                       <>
                         <View>
                         {transaction.type === 'promptpay' ?(
