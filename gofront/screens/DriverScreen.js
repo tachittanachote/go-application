@@ -189,7 +189,7 @@ class DriverScreen extends PureComponent {
     }
 
     handleStart = async () => {
-
+        console.log("starting driver context", this.context.user)
         console.log("Start!!!", this.state.availableSeat)
         
         axios.post("/cars/start", {
@@ -201,7 +201,7 @@ class DriverScreen extends PureComponent {
                 destinationLat: this.state.destination?.latitude ? this.state.destination?.latitude : this.state.destination.geometry.location.lat,
                 destinationLong: this.state.destination?.longitude ? this.state.destination.longitude : this.state.destination.geometry.location.lng,
                 carInfo: {
-                    registration: this.context.user.registration, //Database
+                    registration: this.context.user.license_plate, //Database
                     color: this.context.user.color,     //Database
                     model: this.context.user.model, //Database
                     seat: this.state.availableSeat
