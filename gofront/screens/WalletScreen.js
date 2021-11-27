@@ -18,7 +18,7 @@ import { BackButton } from "../components";
 
 import { COLORS, SIZES, FONTS } from "../constants";
 
-import { Pickr } from '@react-native-picker/picker'
+import { Picker } from '@react-native-picker/picker'
 
 import _ from "lodash";
 import { UserContext } from "../context";
@@ -164,7 +164,7 @@ class WalletScreen extends Component {
         }}
       >
         <Picker
-          selectedValue={selectedValue}
+          selectedValue={"java"}
           style={{ height: 50, width: 150 }}
           onValueChange={(itemValue, itemIndex) => console.log(itemValue)}
         >
