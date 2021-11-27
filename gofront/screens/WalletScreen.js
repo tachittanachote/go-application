@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   RefreshControl,
-  
+  TextInput,
 } from "react-native";
 import { SwipeablePanel } from "rn-swipeable-panel";
 import { Icon } from "react-native-elements";
@@ -23,6 +23,7 @@ import { Picker } from '@react-native-community/picker'
 import _ from "lodash";
 import { UserContext } from "../context";
 import moment from 'moment'
+import jwt from 'jwt-decode'
 
 class WalletScreen extends Component {
   static contextType = UserContext;
@@ -30,14 +31,15 @@ class WalletScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      addedAccount: false,
       isPanelActive: false,
-      iswithDrawPanelActive: false,
-      panelWithDrawProps: {
+      isAddBankPanelActive: false,
+      panelAddBankProps: {
         fullWidth: true,
         openLarge: true,
         refreshing: false,
-        onClose: () => this.closePanelWithDraw(),
-        onPressCloseButton: () => this.closePanelWithDraw(),
+        onClose: () => this.closePanelAddBank(),
+        onPressCloseButton: () => this.closePanelAddBank(),
       },
       panelProps: {
         fullWidth: true,
@@ -46,12 +48,137 @@ class WalletScreen extends Component {
         onClose: () => this.closePanel(),
         onPressCloseButton: () => this.closePanel(),
       },
+      bankNumber: '',
+      holderName: '',
+      bankBrand: 'bbl',
       transaction: null,
+      bankList: [{
+        shortName: 'baac',
+        fullName: 'Bank for Agriculture and Agricultural Cooperatives',
+      },
+      {
+        shortName: 'bay',
+        fullName: 'Bank of Ayudhya(Krungsri)',
+      },
+      {
+        shortName: 'bbl',
+        fullName: 'Bangkok Bank',
+      },
+      {
+        shortName: 'bnp',
+        fullName: 'BNP Paribas',
+      },
+      {
+        shortName: 'boa',
+        fullName: 'Bank of America',
+      },
+      {
+        shortName: 'cacib',
+        fullName: 'CrÃ©dit Agricole',
+      },
+      {
+        shortName: 'cimb',
+        fullName: 'CIMB Thai Bank',
+      },
+      {
+        shortName: 'citi',
+        fullName: 'Citibank',
+      },
+      {
+        shortName: 'db',
+        fullName: 'Deutsche Bank',
+      },
+      {
+        shortName: 'ghb',
+        fullName: 'Government Housing Bank',
+      },
+      {
+        shortName: 'gsb',
+        fullName: 'Government Savings Bank',
+      },
+      {
+        shortName: 'hsbc',
+        fullName: 'Hongkong and Shanghai Banking Corporation',
+      },
+      {
+        shortName: 'ibank',
+        fullName: 'Islamic Bank of Thailand',
+      },
+      {
+        shortName: 'icbc',
+        fullName: 'Industrial and Commercial Bank of China(Thai)',
+      },
+      {
+        shortName: 'jpm',
+        fullName: 'J.P.Morgan',
+      },
+      {
+        shortName: 'kbank',
+        fullName: 'Kasikornbank',
+      },
+      {
+        shortName: 'kk',
+        fullName: 'Kiatnakin Bank',
+      },
+      {
+        shortName: 'ktb',
+        fullName: 'Krungthai Bank',
+      },
+      {
+        shortName: 'lhb',
+        fullName: 'Land and Houses Bank',
+      },
+      {
+        shortName: 'mb',
+        fullName: 'Mizuho Bank',
+      },
+      {
+        shortName: 'mega',
+        fullName: 'Mega International Commercial Bank',
+      },
+      {
+        shortName: 'mufg',
+        fullName: 'Bank of Tokyo - Mitsubishi UFJ',
+      },
+      {
+        shortName: 'rbs',
+        fullName: 'Royal Bank of Scotland',
+      },
+      {
+        shortName: 'sc',
+        fullName: 'Standard Chartered(Thai)',
+      },
+      {
+        shortName: 'scb',
+        fullName: 'Siam Commercial Bank',
+      },
+      {
+        shortName: 'smbc',
+        fullName: 'Sumitomo Mitsui Banking Corporation',
+      },
+      {
+        shortName: 'tcrb',
+        fullName: 'Thai Credit Retail Bank',
+      },
+      {
+        shortName: 'tisco',
+        fullName: 'Tisco Bank',
+      },
+      {
+        shortName: 'ttb',
+        fullName: 'TMBThanachart Bank',
+      },
+      {
+        shortName: 'uob',
+        fullName: 'United Overseas Bank(Thai)',
+      },
+      ]
     };
   }
 
   componentDidMount = async () => {
     await this.checkWalletTransaction();
+    this.checkAccount()
   };
 
   onRefresh = () => {
@@ -154,34 +281,177 @@ class WalletScreen extends Component {
     );
   }
 
-  renderWithdrawContent() {
-    console.log("render!");
-
+  renderWithdraw() {
     return (
+
       <View
         style={{
           padding: SIZES.padding,
         }}
       >
-        <Picker
-          selectedValue={"java"}
-          style={{ height: 50, width: 150 }}
-          onValueChange={(itemValue, itemIndex) => console.log(itemValue)}
-        >
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="js" />
-        </Picker>
-        <Text>ทดสอบ</Text>
+        <Text style={{
+          ...FONTS.h5
+        }}>แจ้งถอนเงิน</Text>
+
+        <View style={{
+          padding: SIZES.padding * 2
+        }}>
+          <View
+            style={{
+              marginBottom: SIZES.margin
+            }}>
+            <Text>จำนวนเงิน</Text>
+            <TextInput placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ holderName: value })}></TextInput>
+          </View>
+
+          <TouchableWithoutFeedback onPress={() => this.addBankAccount()}>
+            <View style={{
+              borderRadius: SIZES.radius - 5,
+              backgroundColor: COLORS.primary,
+              padding: SIZES.padding * 1.5,
+              marginTop: SIZES.margin,
+            }}>
+              <Text style={{
+                textAlign: 'center',
+                color: COLORS.white,
+                ...FONTS.h5
+              }}>ถอนเงิน</Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+        </View>
       </View>
+
     );
+  }
+
+  renderAddBankContent() {
+    console.log("render!");
+
+    return (
+      
+      <View
+        style={{
+          padding: SIZES.padding,
+        }}
+      >
+        <Text style={{
+          ...FONTS.h5
+        }}>เพิ่มบัญชีธนาคาร</Text>
+
+        <View style={{
+          padding: SIZES.padding * 2
+        }}>
+          <Text>ธนาคาร</Text>
+          <Picker
+            selectedValue={this.state.bankBrand}
+            style={{ height: 50, width: '100%' }}
+            onValueChange={(itemValue, itemIndex) => this.setState({ bankBrand: itemValue })}
+          >
+            {this.state.bankList.map((item, index) => (
+              <Picker.Item key={index} label={item.fullName} value={item.shortName} />
+            ))}
+          </Picker>
+
+          <View style={{
+            marginBottom: SIZES.margin
+          }}>
+            <Text>เลขบัญชีธนาคาร</Text>
+            <TextInput keyboardType='numeric' placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ bankNumber: value })}></TextInput>
+          </View>
+
+          <View
+            style={{
+              marginBottom: SIZES.margin
+            }}>
+            <Text>ชื่อบัญชี</Text>
+            <TextInput placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ holderName: value })}></TextInput>
+          </View>
+
+          <TouchableWithoutFeedback onPress={() => this.addBankAccount()}>
+            <View style={{
+              borderRadius: SIZES.radius - 5,
+              backgroundColor: COLORS.primary,
+              padding: SIZES.padding * 1.5,
+              marginTop: SIZES.margin,
+            }}>
+              <Text style={{
+                textAlign: 'center',
+                color: COLORS.white,
+                ...FONTS.h5
+              }}>เพิ่มบัญชี</Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+        </View>
+      </View>
+      
+    );
+  }
+
+  async addBankAccount() {
+    if (!this.state.holderName || !this.state.bankNumber || !this.state.bankBrand) {
+      alert("โปรดระบุข้อมูลให้ครบถ้วน")
+      return;
+    }
+
+    axios.post("/omise/addBank",
+        {
+          bankInfo:{
+            brand: this.state.bankBrand,
+            number: this.state.bankNumber,
+            name: this.state.holderName,
+          }
+        },
+        {
+          headers: {
+            authorization:
+              "Bearer " + await AsyncStorage.getItem("session_token"),
+          },
+        }
+      )
+      .then((e) => {
+        this.setState({ isAddBankPanelActive: false, holderName: '', bankNumber: '', bankBrand: '' }, () => {
+          alert("ดำเนินการสำเร็จ")
+          this.checkAccount()
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+  }
+
+  async checkAccount() {
+    var token = await AsyncStorage.getItem('session_token')
+
+    var decoded = jwt(token)
+    console.log(token)
+    console.log(decoded.user_id)
+    axios.post('/user/bankcheck/' + decoded.user_id, {},
+      {
+        headers: {
+          authorization:
+            "Bearer " + await AsyncStorage.getItem("session_token"),
+        },
+      }).then((resp) => {
+      if(resp.data !== 'error') {
+        console.log(resp.data)
+        this.setState({ addedAccount: resp.data })
+      }else {
+        this.setState({ addedAccount: false })
+      }
+    }).catch((res) => {
+      console.log(res)
+    })
   }
 
   closePanel = () => {
     this.setState({ isPanelActive: false });
   };
 
-  closePanelWithDraw = () => {
-    this.setState({ iswithDrawPanelActive: false });
+  closePanelAddBank = () => {
+    this.setState({ isAddBankPanelActive: false });
   };
 
   checkWalletTransaction = async () => {
@@ -401,7 +671,7 @@ class WalletScreen extends Component {
                       style={{
                         flexDirection: "row",
                       }}
-                      onPress={() => this.setState({ iswithDrawPanelActive: true })}
+                      onPress={() => this.setState({ isAddBankPanelActive: true })}
                     >
                       <Icon
                         type="ionicon"
@@ -652,10 +922,10 @@ class WalletScreen extends Component {
         </SwipeablePanel>
 
         <SwipeablePanel
-          {...this.state.panelWithDrawProps}
-          isActive={this.state.iswithDrawPanelActive}
+          {...this.state.panelAddBankProps}
+          isActive={this.state.isAddBankPanelActive}
         >
-          {this.renderWithdrawContent()}
+          {this.state.addedAccount ? this.renderWithdraw() : this.renderAddBankContent()}
         </SwipeablePanel>
 
       </SafeAreaView>
@@ -710,4 +980,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
+  inputBank: { 
+    backgroundColor: COLORS.lightGray3, 
+    padding: SIZES.margin ,
+    marginTop: 10,
+    borderRadius: SIZES.radius2
+  }
 });

@@ -52,7 +52,7 @@ class Balance extends Component {
                     flex: 2,
                     marginRight: 20,
                 }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.navigate()}>
                         <View>
                             <Text style={{
                                 fontWeight: 'bold',
