@@ -1,12 +1,21 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback, View, Text, StyleSheet } from 'react-native';
+import { TouchableWithoutFeedback, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt from 'jwt-decode'
 import { COLORS, FONTS, SIZES } from '../constants';
+import Modal from "react-native-modal";
+import { images } from '../constants'
 
 class MenuButton extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            modalState: false
+        }
+    }
 
     handlePress = (routeName) => {
         if (this.props.to === "DriverScreen") {
@@ -34,9 +43,8 @@ class MenuButton extends Component {
                 this.props.navigation.navigate(route);
             }
             else {
-                alert(resp.data)
+                this.setState({ modalState: true })
             }
-            console.log(resp.data)
         }).catch((e) => {
             console.log(e)
         })
@@ -44,6 +52,7 @@ class MenuButton extends Component {
 
     render() {
         return (
+            <>
             <TouchableWithoutFeedback onPress={() => this.handlePress(this.props.to)}>
                 <View style={styles.menuBox}>
                     <Icon
@@ -57,6 +66,68 @@ class MenuButton extends Component {
                     </View>
                 </View>
             </TouchableWithoutFeedback>
+                <Modal
+                    isVisible={this.state.modalState}
+                    animationIn="slideInDown"
+                    animationOut="slideOutUp"
+                >
+                    <View style={{
+                        flex: 1,
+                        backgroundColor: COLORS.white,
+                        borderRadius: SIZES.radius,
+                    }}>
+                        <View style={{
+                            padding: 20,
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <View style={{
+                                marginTop: SIZES.margin
+                            }}>
+                                <Text style={{
+                                    textAlign: 'center',
+                                    marginBottom: 10,
+                                    ...FONTS.h5
+                                }}>โปรดดำเนินการยืนยันข้อมูล</Text>
+                            </View>
+                        
+                            <Image 
+                            style={{
+                                width: SIZES.height * (20 / 100),
+                                height: SIZES.height * (20 / 100)
+                            }}
+                            source={images.verify_card}></Image>
+                            <Text style={{
+                                textAlign: 'center',
+                                color: COLORS.red,
+                            }}>ยืนยันตัวตนการขับขี่และรับส่งผู้โดยสาร</Text>
+
+                        </View>
+                        <View style={{
+                            position: 'absolute',
+                            bottom: 50,
+                            alignItems: 'center',
+                            width: '100%'
+                        }}>
+                            <TouchableOpacity style={{
+                                marginBottom: 10
+                            }} onPress={() => console.log("test")}>
+                                <Text style={{
+                                    color: COLORS.bluesky,
+                                    ...FONTS.h6
+                                }}>ส่งข้อมูลเพื่อเปิดใช้งาน</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.setState({ modalState: false})}>
+                                <Text style={{
+                                    color: COLORS.lightGray2,
+                                    ...FONTS.h6
+                                }}>ปิด</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </>
         );
     }
 }

@@ -11,6 +11,7 @@ const destination_icon = require('../assets/images/destination.png');
 const star_icon = require('../assets/images/star.png');
 const empty_star_icon = require('../assets/images/empty_star.png');
 const half_star_icon = require('../assets/images/half_star.png');
+const verify_card = require('../assets/images/verify_card.png');
 
 export default {
     fancy_bottom,
@@ -26,4 +27,5 @@ export default {
     star_icon,
     empty_star_icon,
     half_star_icon,
+    verify_card,
 }
