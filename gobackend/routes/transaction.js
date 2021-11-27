@@ -65,11 +65,14 @@ router.post("/update", async (req, res) => {
         let user = await userController.getUserById(passenger.id)
         let driver = await userController.getUserById(driverInfo.id)
 
+        console.log(user)
+        console.log(driver)
+
         if(transaction[0].type === 'wallet'){
             console.log('wallet paid')
             console.log('in transaction process')
-            let passengerUpdateBalance = (user[0].wallet_balance) - (info.amount)
-            let driverUpdateBalance = (driver[0].wallet_balance) + (info.amount)
+            let passengerUpdateBalance = user[0].wallet_balance - info.amount
+            let driverUpdateBalance = driver[0].wallet_balance + info.amount
             console.log('balance')
             console.log(passengerUpdateBalance)
             console.log(driverUpdateBalance)
