@@ -96,6 +96,7 @@ router.post("/create", middleware.verifySessionToken, async (req, res) => {
                     user_id: req.user.user_id,
                     amount: amount / 100,
                     type: 'promptpay',
+                    action: 'deposit'
                 }
 
                 await walletTransactionController.addWalletTransaction(wallet)

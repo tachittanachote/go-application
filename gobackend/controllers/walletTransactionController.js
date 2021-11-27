@@ -3,12 +3,13 @@ const moment = require("moment");
 
 exports.addWalletTransaction = (wallet) => {
     return new Promise((resolve, reject) => {
-        db.query(`INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type,) VALUES (?, ?, 'pending', ?, ?)`, 
+        db.query(`INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type, action) VALUES (?, ?, 'pending', ?, ?, ?)`,
             [
                 wallet.id, 
                 wallet.user_id, 
                 wallet.amount,
                 wallet.type,
+                wallet.action
             ], (err, result) => {
             if (err) reject(err);
             resolve(result);
