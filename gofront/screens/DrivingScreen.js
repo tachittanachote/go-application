@@ -178,7 +178,7 @@ class DrivingScreen extends Component {
                 id: passengerId,
             },
             payInfo: {
-                amonut: moneyAmonut
+                amount: moneyAmonut
             }
         }, {
             headers: {
