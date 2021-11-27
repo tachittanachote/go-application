@@ -257,7 +257,7 @@ router.post("/removeBank", middleware.verifySessionToken, async (req, res) => {
 });
 
 
-router.post('/withdraw', async (req, res) => {
+router.post('/withdraw', middleware.verifySessionToken, async (req, res) => {
     let info = req.body.info;
     let bank = await bankAccountController.getBankAccountByUserId(req.user.user_id);
     let recipient = bank[0].recipient_id;

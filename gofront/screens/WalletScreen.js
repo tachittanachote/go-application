@@ -31,6 +31,7 @@ class WalletScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      withdrawAmount: 0,
       addedAccount: false,
       isPanelActive: false,
       isAddBankPanelActive: false,
@@ -296,15 +297,42 @@ class WalletScreen extends Component {
         <View style={{
           padding: SIZES.padding * 2
         }}>
+
+          <View style={{
+            marginBottom: SIZES.margin,
+            backgroundColor: COLORS.secondary,
+            padding: SIZES.padding,
+            borderRadius: SIZES.radius
+          }}>
+            <View style={{
+              position: "absolute",
+              right: 0,
+            }}>
+              <TouchableOpacity onPress={() => this.removeBankAccount()}>
+                <Icon
+                  reverse
+                  name='close-outline'
+                  type='ionicon'
+                  color={COLORS.red}
+                  size={12}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text>บัญชีปลายทางของคุณ</Text>
+            <Text>ชื่อธนาคาร:  {this.state.addedAccount[0].bank_name}</Text>
+            <Text>ชื่อบัญชี:  {this.state.addedAccount[0].bank_holder}</Text>
+            <Text>หมายเลขบัญชี:  {this.state.addedAccount[0].bank_account_number}</Text>
+          </View>
+
           <View
             style={{
               marginBottom: SIZES.margin
             }}>
             <Text>จำนวนเงิน</Text>
-            <TextInput placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ holderName: value })}></TextInput>
+            <TextInput placeholder="ขั้นตำ 30 บาท" keyboardType='numeric' style={styles.inputBank} onChangeText={(value) => this.setState({ withdrawAmount: value })}></TextInput>
           </View>
 
-          <TouchableWithoutFeedback onPress={() => this.addBankAccount()}>
+          <TouchableWithoutFeedback onPress={() => this.confirmWithdraw()}>
             <View style={{
               borderRadius: SIZES.radius - 5,
               backgroundColor: COLORS.primary,
@@ -323,6 +351,56 @@ class WalletScreen extends Component {
       </View>
 
     );
+  }
+
+  async confirmWithdraw() {
+    if (this.state.withdrawAmount < 30 ) {
+      alert('จำนวนการถอนขั้นต่ำ 30 บาท')
+      return;
+    }
+
+    axios.post("/omise/addBank",
+      {
+        info: {
+          amount: this.state.withdrawAmount,
+        }
+      },
+      {
+        headers: {
+          authorization:
+            "Bearer " + await AsyncStorage.getItem("session_token"),
+        },
+      }
+    )
+      .then((e) => {
+        this.context.refreshUser((e) => {
+          alert("ดำเนินการสำเร็จ")
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+  }
+
+  async removeBankAccount() {
+    axios.post("/omise/removeBank", {},
+      {
+        headers: {
+          authorization:
+            "Bearer " + await AsyncStorage.getItem("session_token"),
+        },
+      }
+    )
+      .then((e) => {
+        this.setState({ isAddBankPanelActive: false, holderName: '', bankNumber: '', bankBrand: '' }, () => {
+          alert("ดำเนินการสำเร็จ")
+          this.checkAccount()
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   renderAddBankContent() {
@@ -436,7 +514,6 @@ class WalletScreen extends Component {
         },
       }).then((resp) => {
       if(resp.data !== 'error') {
-        console.log(resp.data)
         this.setState({ addedAccount: resp.data })
       }else {
         this.setState({ addedAccount: false })
