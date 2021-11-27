@@ -19,6 +19,7 @@ import { COLORS, SIZES, FONTS } from "../constants";
 
 import _ from "lodash";
 import { UserContext } from "../context";
+import moment from 'moment'
 
 class WalletScreen extends Component {
   static contextType = UserContext;
@@ -366,26 +367,11 @@ class WalletScreen extends Component {
                     >
                       <Icon
                         type="ionicon"
-                        name="scan-outline"
-                        size={22}
-                        color={COLORS.purple}
-                      />
-                      <Text style={styles.menuText}>สแกนจ่าย</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.suggestionMenu}>
-                    <TouchableOpacity
-                      style={{
-                        flexDirection: "row",
-                      }}
-                    >
-                      <Icon
-                        type="ionicon"
                         name="swap-horizontal-outline"
                         size={22}
                         color={COLORS.purple}
                       />
-                      <Text style={styles.menuText}>โอนเงิน</Text>
+                      <Text style={styles.menuText}>ถอนเงิน</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -420,7 +406,7 @@ class WalletScreen extends Component {
                       ...FONTS.h6,
                     }}
                   >
-                    ดูทั้งหมด
+
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -443,36 +429,36 @@ class WalletScreen extends Component {
                       marginTop: SIZES.margin,
                     }}
                   >
-                    {transaction.action === "withdraw" ? (
+                    {transaction.action === "deposit" ? (
                       <>
                         <View>
-                        {transaction.type === 'promptpay' ?(
-                          <Text
-                          style={{
-                            color: COLORS.lightGray1,
-                            ...FONTS.body3,
-                          }}
-                        >
-                          เติมเงินเข้า wallet
-                        </Text>
-                        ):(
-                          <Text
-                            style={{
-                              color: COLORS.lightGray1,
-                              ...FONTS.body3,
-                            }}
-                          >
-                            ได้รับค่าบริการ
-                          </Text>
-                        )}
-                          
+                          {transaction.type === 'promptpay' ? (
+                            <Text
+                              style={{
+                                color: COLORS.lightGray1,
+                                ...FONTS.body3,
+                              }}
+                            >
+                              เติมเงินเข้า wallet
+                            </Text>
+                          ) : (
+                            <Text
+                              style={{
+                                color: COLORS.lightGray1,
+                                ...FONTS.body3,
+                              }}
+                            >
+                              ได้รับค่าบริการ
+                            </Text>
+                          )}
+
                           <Text
                             style={{
                               color: COLORS.lightGray2,
                               ...FONTS.body4,
                             }}
                           >
-                            {transaction.type}
+                            {transaction.type} - {moment(transaction.created_at).format("YYYY-MM-DD HH:mm")}
                           </Text>
                         </View>
                         <View
@@ -510,33 +496,33 @@ class WalletScreen extends Component {
                     ) : (
                       <>
                         <View>
-                        {transaction.type === 'wallet' ?(
-                          <Text
-                            style={{
-                              color: COLORS.lightGray1,
-                              ...FONTS.body3,
-                            }}
-                          >
-                            ชำระค่าบริการ
-                          </Text>
-                        ):(
-                        <Text
-                            style={{
-                              color: COLORS.lightGray1,
-                              ...FONTS.body3,
-                            }}
-                          >
-                            ถอนเงิน
-                          </Text>
-                        )}
-                          
+                          {transaction.type === 'wallet' ? (
+                            <Text
+                              style={{
+                                color: COLORS.lightGray1,
+                                ...FONTS.body3,
+                              }}
+                            >
+                              ชำระค่าบริการ
+                            </Text>
+                          ) : (
+                            <Text
+                              style={{
+                                color: COLORS.lightGray1,
+                                ...FONTS.body3,
+                              }}
+                            >
+                              ถอนเงิน
+                            </Text>
+                          )}
+
                           <Text
                             style={{
                               color: COLORS.lightGray2,
                               ...FONTS.body4,
                             }}
                           >
-                            {transaction.type}
+                            {transaction.type} - {moment(transaction.created_at).format("YYYY-MM-DD HH:mm")}
                           </Text>
                         </View>
                         <View

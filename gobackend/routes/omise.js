@@ -164,4 +164,24 @@ router.post('/cancel', middleware.verifySessionToken, async (req, res) => {
 })
 
 
+router.post('/withdraw', middleware.verifySessionToken, async (req, res) => {
+    var options = {
+        'method': 'POST',
+        'url': 'https://api.omise.co/transfers',
+        'headers': {
+            'Authorization': 'Basic c2tleV90ZXN0XzVweGMxMzBqdzd4NDdwZ2UzcDM6',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        form: {
+            'amount': '3874662',
+            'recipient': 'recp_test_4z3wur7amjq2nbg8x44'
+        }
+    };
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+    });
+
+})
+
 module.exports = router;
