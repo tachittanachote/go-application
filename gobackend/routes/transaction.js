@@ -70,7 +70,7 @@ router.post("/update", async (req, res) => {
             let updateD = await userController.updateUserBalance(driverInfo.id, driverUpdateBalance)
             let updateP = await userController.updateUserBalance(passenger.id, passengerUpdateBalance)
 
-            DriverWallet = {
+            let DriverWallet = {
                 id:"GO"+uuidv4(),
                 user_id: driverInfo.id, 
                 status : "success",
@@ -78,7 +78,7 @@ router.post("/update", async (req, res) => {
                 type: 'wallet',
                 action: 'deposit'
             }
-            PassengerWallet = {
+            let PassengerWallet = {
                 id:"GO"+uuidv4(),
                 user_id: passenger.id, 
                 status : "success",

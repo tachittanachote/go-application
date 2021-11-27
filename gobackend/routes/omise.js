@@ -257,7 +257,16 @@ router.post("/removeBank", middleware.verifySessionToken, async (req, res) => {
 });
 
 
-router.post('/withdraw', middleware.verifySessionToken, async (req, res) => {
+router.post('/withdraw', async (req, res) => {
+    let info = req.body.info;
+    let bank = await bankAccountController.getBankAccountByUserId(req.user.user_id);
+    let recipient = bank[0].recipient_id;
+    let user = await userController.getUserById(req.user.user_id);
+
+    if(user[0].wallet_balance < info.amount){
+        return res.json("error");
+    }
+
     var options = {
         'method': 'POST',
         'url': 'https://api.omise.co/transfers',
@@ -266,14 +275,28 @@ router.post('/withdraw', middleware.verifySessionToken, async (req, res) => {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         form: {
-            'amount': '3874662',
-            'recipient': 'recp_test_4z3wur7amjq2nbg8x44'
+            'amount': (info.amount) * 1000,
+            'recipient': recipient
         }
     };
-    request(options, function (error, response) {
-        if (error) throw new Error(error);
-        console.log(response.body);
+    request(options, async function (error, response) {
+        if (error) return res.json("error");
+        //console.log(response.body);
+        let values = JSON.parse(response.body);
+        let wallet = {
+            id: values.id,
+            user_id: req.user.user_id, 
+            status : "success",
+            amount: info.amount,
+            type: 'bank',
+            action: 'withdraw',
+        }
+        let result_amount = user[0].wallet_balance - info.amount
+        let updateWallet = await walletTransactionController.addWalletTransactionByTravel(wallet)
+        let updateBalance = await userController.updateUserBalance(req.user.user_id, result_amount)
+
     });
+    return res.json("success");
 
 })
 
