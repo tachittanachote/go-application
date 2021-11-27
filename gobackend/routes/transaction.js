@@ -56,6 +56,9 @@ router.post("/update", async (req, res) => {
         let history = await historyController.getLastHistoryByUserId(passenger.id)
         let transaction = await transactionController.getTransactionByHistoryId(history[0].history_id)
         let updateTransaction = await transactionController.updateTransactionByHistoryId(history[0].history_id, info.amount, 'success')
+
+        
+
         //console.log(transaction[0].type)
         console.log(updateTransaction)
 
@@ -94,11 +97,13 @@ router.post("/update", async (req, res) => {
             let walletP = await walletTransactionController.addWalletTransactionByTravel(PassengerWallet)
             console.log("walletD",walletD)
             console.log("walletP", walletP)
+            return res.json("success");
         }else{
             console.log('cash paid')
+            return res.json("success");
         }
 
-        return res.json("success");
+        
     }catch{
         return res.json("error");
     }
