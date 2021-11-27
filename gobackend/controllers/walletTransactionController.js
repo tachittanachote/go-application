@@ -44,3 +44,26 @@ exports.getPendingWalletTransactionByUserId = (id, type) => {
         });
     });
 }
+
+exports.addWalletTransactionByTravel = (wallet) => {
+    const UPDATE = "INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type) VALUES ?"
+    const now = moment().format("YYYY-MM-DD hh:mm:ss");
+    //console.log("controller said:",wallet)
+    //var now = moment().format("YYYY-MM-DD hh:mm:ss");
+    var values = [[
+        wallet.id,
+        wallet.user_id, 
+        wallet.status,
+        wallet.amount,
+        wallet.type,
+    ]];
+    return new Promise((resolve, reject) => {
+        db.query(UPDATE, [values], (err, result) => {
+            if (err){ 
+                console.log(err) 
+                reject(err)
+            };
+            resolve(result);
+        });
+    });
+}

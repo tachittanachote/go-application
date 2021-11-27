@@ -4,32 +4,36 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const transactionController = require('../controllers/transactionController');
 const historyController = require('../controllers/historyController');
+const walletTransactionController = require('../controllers/walletTransactionController');
 
 const car = require("../models/car");
 const passengers = require("../models/passenger");
 const users = require("../models/user");
+
+const { v4: uuidv4 } = require('uuid');
+
 
 
 router.post("/", async(req, res) => {
     var history = req.body.history;
     try{
         let transactions  = await transactionController.getTransactionByHistoryId(history.id);
-        //console.log(histories)
+        //console.log(transactions)
         res.json(transactions);
     }catch(e){
         console.log(e)
         res.json("error")
     }
     
-    
+
 });
 
 router.post("/create", async (req, res) => {
     var history = req.body.history;
     var info = req.body.payInfo;
 
-    console.log("history", history)
-    console.log("info", info)
+    //console.log("history", history)
+    //console.log("info", info)
 
     try{
         let transaction  = await transactionController.createTransaction(0, info.type, 'pending', history.id)
@@ -59,11 +63,31 @@ router.post("/update", async (req, res) => {
         let driver = await userController.getUserById(driverInfo.id)
         if(transaction[0].type === 'wallet'){
             console.log('wallet paid')
+
             let passengerUpdateBalance = (user[0].wallet_balance) - (info.amount)
             let driverUpdateBalance = (driver[0].wallet_balance) + (info.amount)
             //console.log(passengerUpdateBalance)
             let updateD = await userController.updateUserBalance(driverInfo.id, driverUpdateBalance)
             let updateP = await userController.updateUserBalance(passenger.id, passengerUpdateBalance)
+
+            DriverWallet = {
+                id:"GO"+uuidv4(),
+                user_id: driverInfo.id, 
+                status : "success",
+                amount: info.amount,
+                type: 'income_wallet',
+            }
+            PassengerWallet = {
+                id:"GO"+uuidv4(),
+                user_id: passenger.id, 
+                status : "success",
+                amount: info.amount,
+                type: 'outcome_wallet',
+            }
+            let walletD = await walletTransactionController.addWalletTransactionByTravel(DriverWallet)
+            let walletP = await walletTransactionController.addWalletTransactionByTravel(PassengerWallet)
+            //console.log(walletD)
+            //console.log(walletP)
         }else{
             console.log('cash paid')
         }

@@ -31,14 +31,48 @@ class HistoryInfoScreen extends Component {
       stars: null,
       commentFeedback: null,
       updateAfterFeedback: true,
+      transaction: null,
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     if (this.props.route.params.history.type === "passenger") {
-      this.readFeedback();
+      await this.readFeedback();
     }
+    await this.getTransaction();
+    console.log(this.state.transaction);
   };
+
+  async getTransaction() {
+    return new Promise(async(resolve, reject)=>{
+      axios
+      .post(
+        "/transaction",
+        {
+          history: {
+            id: this.props.route.params.history.history_id,
+          },
+        },
+        {
+          headers: {
+            authorization:
+              "Bearer " + (await AsyncStorage.getItem("session_token")),
+          },
+        }
+      )
+      .then(async(res) => {
+        //console.log(res.data);
+
+        this.setState({
+          transaction: res.data[0],
+        },resolve(1));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    })
+    
+  }
 
   async readFeedback() {
     //console.log(this.props.route.params.history.history_id)
@@ -282,7 +316,7 @@ class HistoryInfoScreen extends Component {
           >
             ค่าโดยสารทั้งหมด
           </Text>
-          <Text>4 บาท</Text>
+          <Text>{this.state.transaction===null? 0 :this.state.transaction.money_amount} บาท</Text>
         </View>
         <View
           style={{
@@ -298,7 +332,8 @@ class HistoryInfoScreen extends Component {
           >
             รูปแบบการชำระเงิน
           </Text>
-          <Text>เงินสด</Text>
+          {this.state.transaction===null? <Text>เงินสด</Text> :(this.state.transaction.type === 'cash'?<Text>เงินสด</Text>:<Text>wallet</Text>)}
+          
         </View>
       </View>
     );
