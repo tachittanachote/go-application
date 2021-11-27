@@ -45,6 +45,15 @@ exports.getPendingWalletTransactionByUserId = (id, type) => {
     });
 }
 
+exports.getWalletTransactionByUserId = (uid) => {
+    return new Promise((resolve, reject) => {
+        db.query(`SELECT * FROM wallet_transactions WHERE user_id = ?`, [uid], (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+}
+
 exports.addWalletTransactionByTravel = (wallet) => {
     const UPDATE = "INSERT INTO wallet_transactions (wallet_transaction_id, user_id, status, amount, type, action) VALUES ?"
     const now = moment().format("YYYY-MM-DD hh:mm:ss");

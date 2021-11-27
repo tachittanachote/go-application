@@ -17,6 +17,7 @@ const omiseRoute = require("./routes/omise");
 const historyRoute = require("./routes/history");
 const feedbackRoute = require("./routes/feedback");
 const transactionRoute = require("./routes/transaction");
+const walletRoute = require("./routes/wallet");
 
 //Middleware
 const middleware = require("./middleware");
@@ -56,6 +57,7 @@ router.use('/omise', omiseRoute)
 router.use('/history', historyRoute)
 router.use('/feedback', feedbackRoute)
 router.use('/transaction', transactionRoute)
+router.use('/wallet', walletRoute)
 
 app.listen(PORT, () => {
     console.log(`SERVER: listening on 0.0.0.0:${PORT}`)

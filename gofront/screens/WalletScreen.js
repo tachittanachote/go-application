@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   SafeAreaView,
   Text,
@@ -7,20 +9,19 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ScrollView,
-  RefreshControl
-} from 'react-native';
-import { SwipeablePanel } from 'rn-swipeable-panel';
-import { Icon } from 'react-native-elements';
-import { BackButton } from '../components';
+  RefreshControl,
+} from "react-native";
+import { SwipeablePanel } from "rn-swipeable-panel";
+import { Icon } from "react-native-elements";
+import { BackButton } from "../components";
 
-import { COLORS, SIZES, FONTS } from '../constants';
+import { COLORS, SIZES, FONTS } from "../constants";
 
-import _ from 'lodash'
-import { UserContext } from '../context';
+import _ from "lodash";
+import { UserContext } from "../context";
 
 class WalletScreen extends Component {
-
-  static contextType = UserContext
+  static contextType = UserContext;
 
   constructor(props) {
     super(props);
@@ -33,56 +34,70 @@ class WalletScreen extends Component {
         onClose: () => this.closePanel(),
         onPressCloseButton: () => this.closePanel(),
       },
-    }
+      transaction: null,
+    };
   }
+
+  componentDidMount = async () => {
+    await this.checkWalletTransaction();
+  };
 
   onRefresh = () => {
     this.setState({ refreshing: true });
     this.context.refreshUser((e) => {
       this.setState({ refreshing: false });
-    })
+    });
   };
 
   navigate(screen) {
-    return this.props.navigation.navigate(screen)
+    return this.props.navigation.navigate(screen);
   }
 
   renderContent() {
-
-    console.log("render!")
+    console.log("render!");
 
     return (
-      <View style={{
-        padding: SIZES.padding
-      }}>
+      <View
+        style={{
+          padding: SIZES.padding,
+        }}
+      >
         <View>
-          <Text style={{
-            ...FONTS.h5
-          }}>All top-up methods</Text>
+          <Text
+            style={{
+              ...FONTS.h5,
+            }}
+          >
+            All top-up methods
+          </Text>
         </View>
-        <View style={{
-          marginTop: SIZES.margin
-        }}>
-          <TouchableWithoutFeedback onPress={() => this.navigate("PromptPayScreen")}>
+        <View
+          style={{
+            marginTop: SIZES.margin,
+          }}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => this.navigate("PromptPayScreen")}
+          >
             <View style={styles.paymentMethod}>
               <View>
                 <Icon
                   reverse
-                  type='ionicon'
-                  name='qr-code-outline'
+                  type="ionicon"
+                  name="qr-code-outline"
                   size={18}
-                  color='#E3FCFF'
-                  reverseColor='#00DF5F'
+                  color="#E3FCFF"
+                  reverseColor="#00DF5F"
                 />
               </View>
               <View style={styles.paymentLabel}>
                 <View>
                   <Text>Prompt Pay </Text>
                 </View>
-                <View style={{ flex: 2, alignItems: 'flex-end' }}>
+                <View style={{ flex: 2, alignItems: "flex-end" }}>
                   <Icon
-                    type='ionicon'
-                    name='chevron-forward-outline'
+                    type="ionicon"
+                    name="chevron-forward-outline"
                     size={14}
                     color={COLORS.lightGray2}
                   />
@@ -92,27 +107,29 @@ class WalletScreen extends Component {
           </TouchableWithoutFeedback>
         </View>
         <View>
-          <TouchableWithoutFeedback onPress={() => this.navigate("CreditCardScreen")}>
+          <TouchableWithoutFeedback
+            onPress={() => this.navigate("CreditCardScreen")}
+          >
             <View style={styles.paymentMethod}>
               <View>
                 <Icon
                   reverse
-                  type='ionicon'
-                  name='card-outline'
+                  type="ionicon"
+                  name="card-outline"
                   size={18}
                   color={COLORS.lightGray2}
-                  color='#FFF3DE'
-                  reverseColor='#FF7C00'
+                  color="#FFF3DE"
+                  reverseColor="#FF7C00"
                 />
               </View>
               <View style={styles.paymentLabel}>
                 <View>
                   <Text>Credit Card</Text>
                 </View>
-                <View style={{ flex: 2, alignItems: 'flex-end' }}>
+                <View style={{ flex: 2, alignItems: "flex-end" }}>
                   <Icon
-                    type='ionicon'
-                    name='chevron-forward-outline'
+                    type="ionicon"
+                    name="chevron-forward-outline"
                     size={14}
                     color={COLORS.lightGray2}
                   />
@@ -122,226 +139,443 @@ class WalletScreen extends Component {
           </TouchableWithoutFeedback>
         </View>
       </View>
-    )
+    );
   }
 
   closePanel = () => {
     this.setState({ isPanelActive: false });
   };
 
+  checkWalletTransaction = async () => {
+    return new Promise(async (resolve, reject) => {
+      axios
+        .post(
+          "/wallet",
+          {
+            user: {
+              id: this.context.user.user_id,
+            },
+          },
+          {
+            headers: {
+              authorization:
+                "Bearer " + (await AsyncStorage.getItem("session_token")),
+            },
+          }
+        )
+        .then((e) => {
+          console.log(e.data);
+          this.setState(
+            {
+              transaction: e.data,
+            },
+            resolve(1)
+          );
+        })
+        .catch((e) => {
+          console.log(e);
+          resolve(0);
+        });
+    });
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <BackButton navigation={this.props.navigation}></BackButton>
-        <ScrollView refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-            title="Pull to refresh"
-          />
-        }
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+              title="Pull to refresh"
+            />
+          }
         >
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              alignItems: "center",
+              marginTop: SIZES.margin * 1.35,
+            }}
+          >
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: SIZES.body3,
+              }}
+            >
+              วิธีการชำระเงิน
+            </Text>
+          </View>
 
           <View
             style={{
-              position: 'absolute',
-              width: '100%',
-              alignItems: 'center',
-              marginTop: SIZES.margin * 1.35
-            }}>
-            <Text style={{
-              fontWeight: 'bold',
-              fontSize: SIZES.body3
-            }}>วิธีการชำระเงิน</Text>
-          </View>
+              margin: SIZES.margin,
+              backgroundColor: COLORS.white,
+              borderRadius: SIZES.radius,
+              backgroundColor: COLORS.white,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 3,
+                height: 3,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 1.41,
 
-
-          <View style={{
-            margin: SIZES.margin,
-            backgroundColor: COLORS.white,
-            borderRadius: SIZES.radius,
-            backgroundColor: COLORS.white,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 3,
-              height: 3,
-            },
-            shadowOpacity: 0.20,
-            shadowRadius: 1.41,
-
-            elevation: 5,
-            position: 'relative',
-            height: SIZES.height * (22 / 100),
-          }}>
-
-            <View><Text style={{
-              fontSize: SIZES.h3,
-              color: COLORS.purple,
-              paddingLeft: SIZES.padding,
-              paddingTop: SIZES.padding,
-              fontWeight: 'bold'
-            }}>GoPay Wallet</Text></View>
-            <View style={{
-              flexDirection: 'row',
-              paddingLeft: SIZES.padding,
-            }}>
+              elevation: 5,
+              position: "relative",
+              height: SIZES.height * (22 / 100),
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: SIZES.h3,
+                  color: COLORS.purple,
+                  paddingLeft: SIZES.padding,
+                  paddingTop: SIZES.padding,
+                  fontWeight: "bold",
+                }}
+              >
+                GoPay Wallet
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingLeft: SIZES.padding,
+              }}
+            >
               <Icon
-                type='foundation'
-                name='dollar'
+                type="foundation"
+                name="dollar"
                 size={22}
                 color={COLORS.lightGray2}
               />
-              <Text style={{
-                paddingLeft: SIZES.padding,
-                ...FONTS.h1
-              }}>{this.context.user.wallet_balance}</Text>
+              <Text
+                style={{
+                  paddingLeft: SIZES.padding,
+                  ...FONTS.h1,
+                }}
+              >
+                {this.context.user.wallet_balance}
+              </Text>
             </View>
 
-
-
-            <View style={{
-              position: 'absolute',
-              bottom: 0,
-              padding: SIZES.padding * 2.5,
-              borderTopWidth: 1,
-              borderTopColor: COLORS.lightGray3,
-              flex: 2,
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}>
-              <TouchableOpacity style={{
-                flexDirection: 'row',
-              }} onPress={() => this.setState({ isPanelActive: true })}>
+            <View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                padding: SIZES.padding * 2.5,
+                borderTopWidth: 1,
+                borderTopColor: COLORS.lightGray3,
+                flex: 2,
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                }}
+                onPress={() => this.setState({ isPanelActive: true })}
+              >
                 <View>
-                  <Text style={{
-                    fontWeight: 'bold',
-                    color: COLORS.bluesky,
-                    fontSize: SIZES.body4,
-                  }}>เติมเงินเพื่อใช้การชำระโดยไม่ใช้เงินสด!</Text>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      color: COLORS.bluesky,
+                      fontSize: SIZES.body4,
+                    }}
+                  >
+                    เติมเงินเพื่อใช้การชำระโดยไม่ใช้เงินสด!
+                  </Text>
                 </View>
-                <View style={{
-                  flex: 1,
-                  alignItems: 'flex-end'
-                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "flex-end",
+                  }}
+                >
                   <Icon
-                    type='ionicon'
-                    name='chevron-forward-outline'
+                    type="ionicon"
+                    name="chevron-forward-outline"
                     size={22}
                     color={COLORS.lightGray2}
                   />
                 </View>
               </TouchableOpacity>
             </View>
-
           </View>
 
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: COLORS.white,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 12,
+              },
+              shadowOpacity: 0.58,
+              shadowRadius: 16.0,
 
-        <View
+              elevation: 24,
+            }}
+          >
+            <View>
+              <ScrollView
+                horizontal={true}
+                style={{
+                  marginLeft: SIZES.margin,
+                  marginRight: SIZES.margin,
+                  borderBottomWidth: 1,
+                  borderBottomColor: COLORS.lightGray3,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    margin: SIZES.margin,
+                  }}
+                >
+                  <View style={styles.suggestionMenu}>
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: "row",
+                      }}
+                      onPress={() => this.setState({ isPanelActive: true })}
+                    >
+                      <Icon
+                        type="ionicon"
+                        name="add-outline"
+                        size={22}
+                        color={COLORS.purple}
+                      />
+                      <Text style={styles.menuText}>เติมเงิน</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.suggestionMenu}>
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Icon
+                        type="ionicon"
+                        name="scan-outline"
+                        size={22}
+                        color={COLORS.purple}
+                      />
+                      <Text style={styles.menuText}>สแกนจ่าย</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.suggestionMenu}>
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Icon
+                        type="ionicon"
+                        name="swap-horizontal-outline"
+                        size={22}
+                        color={COLORS.purple}
+                      />
+                      <Text style={styles.menuText}>โอนเงิน</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
 
-          style={{
-            flex: 1,
-            backgroundColor: COLORS.white,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 12,
-            },
-            shadowOpacity: 0.58,
-            shadowRadius: 16.00,
-
-            elevation: 24,
-          }}
-
-        >
-
-          <View>
-            <ScrollView
-              horizontal={true}
+            <View
               style={{
-                marginLeft: SIZES.margin,
-                marginRight: SIZES.margin,
-                borderBottomWidth: 1,
-                borderBottomColor: COLORS.lightGray3,
+                margin: SIZES.margin,
+                flexDirection: "row",
               }}
             >
-              <View style={{
-                flexDirection: 'row',
-                margin: SIZES.margin,
-              }}>
-                <View style={styles.suggestionMenu}>
-                  <TouchableOpacity style={{
-                    flexDirection: 'row',
-                  }} onPress={() => this.setState({ isPanelActive: true })}>
-                    <Icon
-                      type='ionicon'
-                      name='add-outline'
-                      size={22}
-                      color={COLORS.purple}
-                    />
-                    <Text style={styles.menuText}>เติมเงิน</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.suggestionMenu}>
-                  <TouchableOpacity style={{
-                    flexDirection: 'row',
-                  }}>
-                    <Icon
-                      type='ionicon'
-                      name='scan-outline'
-                      size={22}
-                      color={COLORS.purple}
-                    />
-                    <Text style={styles.menuText}>สแกนจ่าย</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.suggestionMenu}>
-                  <TouchableOpacity style={{
-                    flexDirection: 'row',
-                  }}>
-                    <Icon
-                      type='ionicon'
-                      name='swap-horizontal-outline'
-                      size={22}
-                      color={COLORS.purple}
-                    />
-                    <Text style={styles.menuText}>โอนเงิน</Text>
-                  </TouchableOpacity>
-                </View>
+              <View>
+                <Text
+                  style={{
+                    ...FONTS.h4,
+                  }}
+                >
+                  รายการล่าสุด
+                </Text>
               </View>
-            </ScrollView>
-          </View>
-
-          <View style={{
-            margin: SIZES.margin,
-            flexDirection: 'row'
-          }}>
-            <View>
-              <Text style={{
-                ...FONTS.h4
-              }}>รายการล่าสุด</Text>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "flex-end",
+                }}
+              >
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: COLORS.bluesky,
+                      ...FONTS.h6,
+                    }}
+                  >
+                    ดูทั้งหมด
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={{
-              flex: 1,
-              alignItems: 'flex-end'
-            }}>
-              <TouchableOpacity>
-                <Text style={{
-                  color: COLORS.bluesky,
-                  ...FONTS.h6
-                }}>ดูทั้งหมด</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
 
+            <ScrollView
+              style={{
+                marginBottom: SIZES.margin,
+              }}
+            >
+              {this.state.transaction &&
+                this.state.transaction.map((transaction, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginRight: SIZES.margin - 5,
+                      marginLeft: SIZES.margin,
+                      marginTop: SIZES.margin,
+                    }}
+                  >
+                    {transaction.action === "withdraw" ? (
+                      <>
+                        <View>
+                        {transaction.type === 'qrcode' ?(
+                          <Text
+                          style={{
+                            color: COLORS.lightGray1,
+                            ...FONTS.body3,
+                          }}
+                        >
+                          เติมเงินเข้า wallet
+                        </Text>
+                        ):(
+                          <Text
+                            style={{
+                              color: COLORS.lightGray1,
+                              ...FONTS.body3,
+                            }}
+                          >
+                            ได้รับค่าบริการ
+                          </Text>
+                        )}
+                          
+                          <Text
+                            style={{
+                              color: COLORS.lightGray2,
+                              ...FONTS.body4,
+                            }}
+                          >
+                            {transaction.type}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            flex: 1,
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                          }}
+                        >
+                          <View
+                            style={{
+                              marginRight: 10,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                ...FONTS.h5,
+                                color: "#8db7a7",
+                              }}
+                            >
+                              THB +{transaction.amount}
+                            </Text>
+                          </View>
+                          <View>
+                            <Icon
+                              type="ionicon"
+                              name="chevron-forward-outline"
+                              size={18}
+                              color={COLORS.lightGray2}
+                            />
+                          </View>
+                        </View>
+                      </>
+                    ) : (
+                      <>
+                        <View>
+                        {transaction.type === 'wallet' ?(
+                          <Text
+                            style={{
+                              color: COLORS.lightGray1,
+                              ...FONTS.body3,
+                            }}
+                          >
+                            ชำระค่าบริการ
+                          </Text>
+                        ):(
+                        <Text
+                            style={{
+                              color: COLORS.lightGray1,
+                              ...FONTS.body3,
+                            }}
+                          >
+                            ถอนเงิน
+                          </Text>
+                        )}
+                          
+                          <Text
+                            style={{
+                              color: COLORS.lightGray2,
+                              ...FONTS.body4,
+                            }}
+                          >
+                            {transaction.type}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            flex: 1,
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                          }}
+                        >
+                          <View
+                            style={{
+                              marginRight: 10,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                ...FONTS.h5,
+                                color: "#c75f5f",
+                              }}
+                            >
+                              THB -{transaction.amount}
+                            </Text>
+                          </View>
+                          <View>
+                            <Icon
+                              type="ionicon"
+                              name="chevron-forward-outline"
+                              size={18}
+                              color={COLORS.lightGray2}
+                            />
+                          </View>
+                        </View>
+                      </>
+                    )}
+                  </View>
+                ))}
 
-
-          <ScrollView style={{
-            marginBottom: SIZES.margin,
-          }}>
-
-
-            {_.times(10, (index) => (
+              {/*_.times(10, (index) => (
               <View key={index} style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -382,16 +616,14 @@ class WalletScreen extends Component {
                   </View>
                 </View>
               </View>
-            ))}
-
-
-          </ScrollView>
-
-
-
-        </View>
+                  ))*/}
+            </ScrollView>
+          </View>
         </ScrollView>
-        <SwipeablePanel {...this.state.panelProps} isActive={this.state.isPanelActive}>
+        <SwipeablePanel
+          {...this.state.panelProps}
+          isActive={this.state.isPanelActive}
+        >
           {this.renderContent()}
         </SwipeablePanel>
       </SafeAreaView>
@@ -405,7 +637,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: 60
+    paddingTop: 60,
   },
   input: {
     borderWidth: 1,
@@ -417,7 +649,7 @@ const styles = StyleSheet.create({
   },
 
   suggestionMenu: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: COLORS.white,
     shadowColor: "#000",
     shadowOffset: {
@@ -425,26 +657,25 @@ const styles = StyleSheet.create({
       height: 12,
     },
     shadowOpacity: 0.58,
-    shadowRadius: 16.00,
+    shadowRadius: 16.0,
 
     elevation: 5,
     marginRight: 15,
     padding: SIZES.padding,
     borderRadius: SIZES.radius2,
-    alignItems: 'center'
+    alignItems: "center",
   },
   menuText: {
     marginLeft: 5,
-    ...FONTS.body4
+    ...FONTS.body4,
   },
   paymentMethod: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   paymentLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
-  }
-
+  },
 });
