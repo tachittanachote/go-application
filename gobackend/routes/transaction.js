@@ -51,7 +51,7 @@ router.post("/update", async (req, res) => {
     var passenger = req.body.passenger;
     var info = req.body.payInfo;
     var driverInfo = req.body.driver;
-    //console.log(info)
+    console.log(info)
     try{
         let history = await historyController.getLastHistoryByUserId(passenger.id)
         let transaction = await transactionController.getTransactionByHistoryId(history[0].history_id)
@@ -65,17 +65,25 @@ router.post("/update", async (req, res) => {
         let user = await userController.getUserById(passenger.id)
         let driver = await userController.getUserById(driverInfo.id)
 
+        console.log(user)
+        console.log(driver)
+
         if(transaction[0].type === 'wallet'){
             console.log('wallet paid')
+            console.log('in transaction process')
+            let passengerUpdateBalance = user[0].wallet_balance - info.amount
+            let driverUpdateBalance = driver[0].wallet_balance + info.amount
+            console.log('balance')
+            console.log(passengerUpdateBalance)
+            console.log(driverUpdateBalance)
 
-            let passengerUpdateBalance = (user[0].wallet_balance) - (info.amount)
-            let driverUpdateBalance = (driver[0].wallet_balance) + (info.amount)
-            //console.log(passengerUpdateBalance)
             let updateD = await userController.updateUserBalance(driverInfo.id, driverUpdateBalance)
             let updateP = await userController.updateUserBalance(passenger.id, passengerUpdateBalance)
 
-            console.log("updateD", updateD)
-            console.log("updateP", updateP)
+            console.log("updateD")
+            console.log(updateD)
+            console.log("updateP")
+            console.log(updateP)
 
             DriverWallet = {
                 id:"GO"+uuidv4(),
@@ -95,8 +103,10 @@ router.post("/update", async (req, res) => {
             }
             let walletD = await walletTransactionController.addWalletTransactionByTravel(DriverWallet)
             let walletP = await walletTransactionController.addWalletTransactionByTravel(PassengerWallet)
-            console.log("walletD",walletD)
-            console.log("walletP", walletP)
+            console.log("walletD")
+            console.log(walletD)
+            console.log("walletP")
+            console.log(walletP)
             return res.json("success");
         }else{
             console.log('cash paid')
