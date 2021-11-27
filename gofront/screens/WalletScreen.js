@@ -18,7 +18,7 @@ import { BackButton } from "../components";
 
 import { COLORS, SIZES, FONTS } from "../constants";
 
-import { Picker } from '@react-native-picker/picker'
+import { Picker } from '@react-native-community/picker'
 
 import _ from "lodash";
 import { UserContext } from "../context";
