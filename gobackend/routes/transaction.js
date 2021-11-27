@@ -51,7 +51,7 @@ router.post("/update", async (req, res) => {
     var passenger = req.body.passenger;
     var info = req.body.payInfo;
     var driverInfo = req.body.driver;
-    //console.log(info)
+    console.log(info)
     try{
         let history = await historyController.getLastHistoryByUserId(passenger.id)
         let transaction = await transactionController.getTransactionByHistoryId(history[0].history_id)
