@@ -16,6 +16,7 @@ const emergencyRoute = require("./routes/emergency")
 const omiseRoute = require("./routes/omise");
 const historyRoute = require("./routes/history");
 const feedbackRoute = require("./routes/feedback");
+const transactionRoute = require("./routes/transaction");
 
 //Middleware
 const middleware = require("./middleware");
@@ -54,6 +55,7 @@ router.use('/profile', middleware.verifySessionToken, profileRoute)
 router.use('/omise', omiseRoute)
 router.use('/history', historyRoute)
 router.use('/feedback', feedbackRoute)
+router.use('/transaction', transactionRoute)
 
 app.listen(PORT, () => {
     console.log(`SERVER: listening on 0.0.0.0:${PORT}`)

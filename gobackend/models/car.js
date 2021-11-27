@@ -61,7 +61,7 @@ exports.addCar = (driver, avaliableSeat, carInfo, options) => {
 
 
 exports.filterOptions=(seat, gender)=>{
-  let cars = carList.filter(car=>car.avaliableSeat <= seat);
+  let cars = carList.filter(car=>car.avaliableSeat >= seat);
   let result = cars.filter(car=>car.filterOption.gender === gender)
   return result;
 }

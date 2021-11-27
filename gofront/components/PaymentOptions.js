@@ -16,18 +16,16 @@ class PaymentOptions extends Component {
     }
 
     toggleModal(state) {
-        console.log(state)
+        //console.log(state)
         this.setState({ toggleState: state })
     }
 
     paymentOptionFormatter(paymentOption) {
         switch (paymentOption) {
             case 'cash': {
-                this.props.onPaymentOptionCallback(paymentOption)
                 return 'ชำระด้วยเงินสด'
             }
             case 'wallet': {
-                this.props.onPaymentOptionCallback(paymentOption)
                 return 'ขำระด้วยกระเป๋าตัง Go Wallet'
             }
         }
@@ -77,7 +75,12 @@ class PaymentOptions extends Component {
                                     marginBottom: 10,
                                     ...FONTS.h5
                                 }}>เลือกช่องทางการชำระเงิน</Text>
-                                <RadioButton.Group onValueChange={(value) => this.setState({ paymentOption: value })} value={this.state.paymentOption}>
+                                <RadioButton.Group  onValueChange={(value) => {
+                                this.setState({paymentOption: value })
+                                this.props.onPaymentOptionCallback(value)
+                                }} 
+                                value={this.state.paymentOption}
+                                >
                                     <TouchableOpacity onPress={() => this.setState({ paymentOption: 'cash' })}>
                                     <View style={{
                                             alignItems: 'center',

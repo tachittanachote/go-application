@@ -105,9 +105,7 @@ class HistoryScreen extends Component {
           for (let i = 0; i < e.data.length; i++) {
             if (e.data[i].status === "done") {
               e.data[i].originName = await this.checkPlace(e.data[i].origin);
-              e.data[i].destinationName = await this.checkPlace(
-                e.data[i].destination
-              );
+              e.data[i].destinationName = await this.checkPlace(e.data[i].destination);
             }
           }
           ////////////
@@ -167,7 +165,7 @@ class HistoryScreen extends Component {
             ...FONTS.body4,
           }}
         >
-          {status}
+          {/*status*/}เสร็จสิ้น
         </Text>
       );
     }

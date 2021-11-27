@@ -168,6 +168,33 @@ class DrivingScreen extends Component {
         })
     }
 
+    async updateRecordPassengerTranscation(passengerId, moneyAmonut) {
+        console.log('function record transaction had called!')
+        axios.post("/transaction/update", {
+            driver: {
+                id: this.context.user.user_id,
+            },
+            passenger: {
+                id: passengerId,
+            },
+            payInfo: {
+                amonut: moneyAmonut
+            }
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((e) => {
+            if(e.data === "success") {
+                console.log('passenger transaction record had updated!')
+            }else{
+                console.log('passenger transaction update errorrrrr')
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
 
     dropPassenger = async (passengerId) => {
 
@@ -199,6 +226,7 @@ class DrivingScreen extends Component {
                         if (e.data.status === "success") {
                            console.log(e.data)
                             await this.recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
+                            await this.updateRecordPassengerTranscation(passengerId, e.data.price)
                             //Alert.alert("สำเร็จ")
                         }
                     }).catch((e) => {

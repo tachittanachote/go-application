@@ -244,7 +244,8 @@ class DriverScreen extends PureComponent {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
         }).then((e) => {
-            if(e.data === "success") {
+            //console.log(e.data)
+            if(e.data.status === "success") {
                 console.log('history record had created!')
             }else{
                 console.log('history errorrrrr')

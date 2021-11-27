@@ -29,17 +29,21 @@ router.post("/create", async (req, res) => {
     var info = req.body.info;
     //userId, driverId, origin, destination, distance, status
     var origin = String(info.origin.lat).concat(', ', String(info.origin.long))
-    console.log(driverId, user, info)
+    //console.log(driverId, user, info)
     try{
         //console.log(origin)
         let history  = await historyController.createHistory(user.id, driverId, origin, 'progress', user.type)
+        //console.log(history.insertId)
         //console.log("history suscess!")
-        console.log(user.type)
+        //console.log(user.type)
         if(user.type === 'passenger'){
             let feedback = await feedbackController.createFeedback(history.insertId, 'pending')
         }
-
-        return res.json("success");
+        data = {
+            status:"success",
+            insertId: history.insertId,
+        }
+        return res.json(data);
 
     }catch{
         //console.log("history error!")
@@ -57,7 +61,7 @@ router.post("/update", async (req, res) => {
     try{
         //console.log(destination)
         let history  = await historyController.updateHistory(user.id, driverId, destination, distance, 'done')
-        //console.log(history)
+        console.log(history)
         return res.json("success");
 
     }catch{
