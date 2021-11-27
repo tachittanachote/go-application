@@ -61,6 +61,7 @@ router.post("/update", async (req, res) => {
 
         let user = await userController.getUserById(passenger.id)
         let driver = await userController.getUserById(driverInfo.id)
+
         if(transaction[0].type === 'wallet'){
             console.log('wallet paid')
 
@@ -70,7 +71,10 @@ router.post("/update", async (req, res) => {
             let updateD = await userController.updateUserBalance(driverInfo.id, driverUpdateBalance)
             let updateP = await userController.updateUserBalance(passenger.id, passengerUpdateBalance)
 
-            let DriverWallet = {
+            console.log(updateD)
+            console.log(updateP)
+
+            DriverWallet = {
                 id:"GO"+uuidv4(),
                 user_id: driverInfo.id, 
                 status : "success",
@@ -78,7 +82,7 @@ router.post("/update", async (req, res) => {
                 type: 'wallet',
                 action: 'deposit'
             }
-            let PassengerWallet = {
+            PassengerWallet = {
                 id:"GO"+uuidv4(),
                 user_id: passenger.id, 
                 status : "success",
@@ -88,8 +92,8 @@ router.post("/update", async (req, res) => {
             }
             let walletD = await walletTransactionController.addWalletTransactionByTravel(DriverWallet)
             let walletP = await walletTransactionController.addWalletTransactionByTravel(PassengerWallet)
-            //console.log(walletD)
-            //console.log(walletP)
+            console.log(walletD)
+            console.log(walletP)
         }else{
             console.log('cash paid')
         }
