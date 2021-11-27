@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Image } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
 import Omise from 'omise-react-native';
 import { BackButton } from '../../components';
 import { COLORS, FONTS, SIZES } from '../../constants';
 import axios from 'axios'
-import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

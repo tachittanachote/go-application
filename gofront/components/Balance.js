@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { COLORS, SIZES, FONTS } from '../constants';
 
