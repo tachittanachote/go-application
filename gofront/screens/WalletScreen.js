@@ -307,6 +307,7 @@ class WalletScreen extends Component {
             <View style={{
               position: "absolute",
               right: 0,
+              zIndex: 2000,
             }}>
               <TouchableOpacity onPress={() => this.removeBankAccount()}>
                 <Icon
@@ -319,9 +320,9 @@ class WalletScreen extends Component {
               </TouchableOpacity>
             </View>
             <Text>บัญชีปลายทางของคุณ</Text>
-            <Text>ชื่อธนาคาร:  {this.state.addedAccount[0].bank_name}</Text>
-            <Text>ชื่อบัญชี:  {this.state.addedAccount[0].bank_holder}</Text>
-            <Text>หมายเลขบัญชี:  {this.state.addedAccount[0].bank_account_number}</Text>
+            <Text>ชื่อธนาคาร:  {this.state.addedAccount[0]?.bank_name}</Text>
+            <Text>ชื่อบัญชี:  {this.state.addedAccount[0]?.bank_holder}</Text>
+            <Text>หมายเลขบัญชี:  {this.state.addedAccount[0]?.bank_account_number}</Text>
           </View>
 
           <View
@@ -354,12 +355,12 @@ class WalletScreen extends Component {
   }
 
   async confirmWithdraw() {
-    if (this.state.withdrawAmount < 30 ) {
-      alert('จำนวนการถอนขั้นต่ำ 30 บาท')
+    if (this.state.withdrawAmount < 30 || this.context.user.wallet_balance < this.state.withdrawAmount ) {
+      alert('โปรดระบุยอดเงินให้ถูกต้อง')
       return;
     }
 
-    axios.post("/omise/addBank",
+    axios.post("/omise/withdraw",
       {
         info: {
           amount: this.state.withdrawAmount,
@@ -373,9 +374,13 @@ class WalletScreen extends Component {
       }
     )
       .then((e) => {
-        this.context.refreshUser((e) => {
-          alert("ดำเนินการสำเร็จ")
-        });
+        if (e.data === "success") {
+          this.context.refreshUser(async(e) => {
+            alert("ดำเนินการสำเร็จ")
+            await this.checkWalletTransaction();
+          });
+          this.setState({ isAddBankPanelActive: false })
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -393,10 +398,14 @@ class WalletScreen extends Component {
       }
     )
       .then((e) => {
-        this.setState({ isAddBankPanelActive: false, holderName: '', bankNumber: '', bankBrand: '' }, () => {
-          alert("ดำเนินการสำเร็จ")
-          this.checkAccount()
-        });
+        if(e.data === "success") {
+          this.setState({ isAddBankPanelActive: false, holderName: '', bankNumber: '', bankBrand: '' }, () => {
+            alert("ดำเนินการสำเร็จ")
+            this.checkAccount()
+          });
+        } else {
+          alert("ไม่สามารถดำเนินการได้")
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -435,7 +444,7 @@ class WalletScreen extends Component {
             marginBottom: SIZES.margin
           }}>
             <Text>เลขบัญชีธนาคาร</Text>
-            <TextInput keyboardType='numeric' placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ bankNumber: value })}></TextInput>
+            <TextInput keyboardType='numeric' placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ bankNumber: value })} />
           </View>
 
           <View
@@ -443,7 +452,7 @@ class WalletScreen extends Component {
               marginBottom: SIZES.margin
             }}>
             <Text>ชื่อบัญชี</Text>
-            <TextInput placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ holderName: value })}></TextInput>
+            <TextInput placeholder="" style={styles.inputBank} onChangeText={(value) => this.setState({ holderName: value })} />
           </View>
 
           <TouchableWithoutFeedback onPress={() => this.addBankAccount()}>

@@ -275,7 +275,7 @@ router.post('/withdraw', middleware.verifySessionToken, async (req, res) => {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         form: {
-            'amount': (info.amount) * 1000,
+            'amount': (info.amount) * 100,
             'recipient': recipient
         }
     };
