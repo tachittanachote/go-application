@@ -74,8 +74,10 @@ router.post("/update", async (req, res) => {
             let updateD = await userController.updateUserBalance(driverInfo.id, driverUpdateBalance)
             let updateP = await userController.updateUserBalance(passenger.id, passengerUpdateBalance)
 
-            console.log("updateD", updateD)
-            console.log("updateP", updateP)
+            console.log("updateD")
+            console.log(updateD)
+            console.log("updateP")
+            console.log(updateP)
 
             DriverWallet = {
                 id:"GO"+uuidv4(),
@@ -95,8 +97,10 @@ router.post("/update", async (req, res) => {
             }
             let walletD = await walletTransactionController.addWalletTransactionByTravel(DriverWallet)
             let walletP = await walletTransactionController.addWalletTransactionByTravel(PassengerWallet)
-            console.log("walletD",walletD)
-            console.log("walletP", walletP)
+            console.log("walletD")
+            console.log(walletD)
+            console.log("walletP")
+            console.log(walletP)
             return res.json("success");
         }else{
             console.log('cash paid')
