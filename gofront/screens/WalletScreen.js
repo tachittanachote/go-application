@@ -446,7 +446,7 @@ class WalletScreen extends Component {
                     {transaction.action === "withdraw" ? (
                       <>
                         <View>
-                        {transaction.type === 'qrcode' ?(
+                        {transaction.type === 'promptpay' ?(
                           <Text
                           style={{
                             color: COLORS.lightGray1,
