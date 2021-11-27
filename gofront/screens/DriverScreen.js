@@ -201,9 +201,9 @@ class DriverScreen extends PureComponent {
                 destinationLat: this.state.destination?.latitude ? this.state.destination?.latitude : this.state.destination.geometry.location.lat,
                 destinationLong: this.state.destination?.longitude ? this.state.destination.longitude : this.state.destination.geometry.location.lng,
                 carInfo: {
-                    registration: "AB123", //Database  
-                    color: "Black",     //Database  
-                    model: "BMW", //Database  
+                    registration: this.context.user.registration, //Database
+                    color: this.context.user.color,     //Database
+                    model: this.context.user.model, //Database
                     seat: this.state.availableSeat
                 }
             },
