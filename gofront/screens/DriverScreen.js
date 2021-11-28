@@ -494,7 +494,7 @@ class DriverScreen extends PureComponent {
     }
 
     async removeFavr(id) {
-        axios.post('/remove', { id: id}, {
+        axios.post('/favorite/remove', { id: id}, {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }

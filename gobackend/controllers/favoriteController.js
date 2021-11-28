@@ -37,7 +37,7 @@ exports.removeFavoriteById = (id) => {
     return new Promise((resolve, reject) => {
         db.query(`DELETE FROM favorite_path WHERE id = ?`,
             [
-                user_id,
+                id,
             ], (err, result) => {
                 if (err) reject(err);
                 resolve(result);
