@@ -45,33 +45,79 @@ class WaitScreen extends Component {
         })
     }
 
-    async recordHistory(lat, long) {
-        console.log('function record had called!')
-        axios.post("/history/create", {
-            carId: this.props.route.params.driver.carId,
-            user: {
-                id: this.context.user.user_id,
-                type: 'passenger',
-            },
-            info: {
-                origin: {
-                    lat: lat,
-                    long: long
+    createTransaction = async (history_id) => {
+        return new Promise(async(resolve, reject)=>{
+            console.log('payment params = ', this.props.route.params.payment)
+            axios.post("/transaction/create", {
+                  history: {
+                    id: history_id,
+                  },
+                  payInfo: {
+                    type: this.props.route.params.payment.type
+                  },
+                },
+                {
+                  headers: {
+                    authorization:
+                      "Bearer " + (await AsyncStorage.getItem("session_token")),
+                  },
                 }
-            }
-        }, {
-            headers: {
-                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
-            }
-        }).then((e) => {
-            if(e.data === "success") {
-                console.log('history record had created!')
-            }else{
-                console.log('history errorrrrr')
-            }
-        }).catch((e) => {
-            console.log(e)
-        })
+              )
+              .then((e) => {
+                  if(e.data === 'success'){
+                    console.log('record payment created')
+                    console.log(e)
+                    resolve(1)
+                  }else{
+                    console.log('record payment error')
+                    resolve(-1)
+                  }
+                    
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+        });
+        
+      };
+
+
+    async recordHistory(lat, long) {
+        return new Promise(async(resolve, reject)=>{
+            console.log('function record had called!')
+            axios.post("/history/create", {
+                carId: this.props.route.params.driver.carId,
+                user: {
+                    id: this.context.user.user_id,
+                    type: 'passenger',
+                },
+                info: {
+                    origin: {
+                        lat: lat,
+                        long: long
+                    }
+                }
+            }, {
+                headers: {
+                    authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+                }
+            }).then(async(e) => {
+                if(e.data.status === "success") {
+                    console.log('history record had created!')
+                    //console.log(e.data.insertId)
+                    let checkRecord = await this.createTransaction(e.data.insertId)
+                    if(checkRecord > 0){
+                        resolve(1)
+                    }
+                }else{
+                    console.log('history errorrrrr')
+                    resolve(-1)
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+        });
+       
     }
 
     handleConfirm() {
@@ -91,11 +137,16 @@ class WaitScreen extends Component {
                     }
                 }).then(async (e) => {
                     if(e.data === "success") {
-                        await this.recordHistory(position.coords.latitude, position.coords.longitude);
-                        this.props.navigation.navigate("TravelScreen", {
-                            driver: this.props.route.params.driver,
-                            driverTravelInfo: this.props.route.params.driverTravelInfo
-                        })
+                        let checkRecord = await this.recordHistory(position.coords.latitude, position.coords.longitude);
+                        if(checkRecord > 0){
+                            this.props.navigation.navigate("TravelScreen", {
+                                driver: this.props.route.params.driver,
+                                driverTravelInfo: this.props.route.params.driverTravelInfo
+                            })
+                        }else{
+                            console.log('some record error')
+                        }
+                        
                     }
                 }).catch((e) => {
                     console.log(e)
@@ -135,8 +186,6 @@ class WaitScreen extends Component {
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
     }
-
-
 
     render() {
         return (

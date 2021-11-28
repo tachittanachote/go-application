@@ -63,16 +63,16 @@ class HistoryScreen extends Component {
           console.log(e.data.name);
           if (e.data.name == undefined) {
             let address = {
-              name:"unnamed place",
-              address: [coordinates[0],coordinates[1],""],
-            }
+              name: "unnamed place",
+              address: [coordinates[0], coordinates[1], ""],
+            };
             resolve(address);
           }
           console.log(e.data.formatted_address);
           let address = {
-            name:e.data.name,
+            name: e.data.name,
             address: e.data.formatted_address.split(","),
-          }
+          };
           resolve(address);
         })
         .catch((e) => {
@@ -105,9 +105,7 @@ class HistoryScreen extends Component {
           for (let i = 0; i < e.data.length; i++) {
             if (e.data[i].status === "done") {
               e.data[i].originName = await this.checkPlace(e.data[i].origin);
-              e.data[i].destinationName = await this.checkPlace(
-                e.data[i].destination
-              );
+              e.data[i].destinationName = await this.checkPlace(e.data[i].destination);
             }
           }
           ////////////
@@ -167,7 +165,7 @@ class HistoryScreen extends Component {
             ...FONTS.body4,
           }}
         >
-          {status}
+          {/*status*/}เสร็จสิ้น
         </Text>
       );
     }
@@ -186,96 +184,104 @@ class HistoryScreen extends Component {
           ประวัติการเดินทาง
         </Text>
         {this.state.history ? (
-          <ScrollView>
-            {this.state.history !== null &&
-              this.state.history
-                .filter((history) => history.status !== "progress")
-                .map((history, index) => (
-                  <TouchableWithoutFeedback
-                    key={index}
-                    onPress={() => this.showInfo(history)}
-                  >
-                    <View
-                      style={{
-                        //top: SIZES.height * (20 / 100) - 5,
-
-                        backgroundColor: COLORS.white,
-                        //height: 85,
-                        width: "97%",
-                        zIndex: 10,
-                        shadowColor: "#000",
-                        elevation: 4,
-                        alignSelf: "center",
-                        borderRadius: 8,
-                        justifyContent: "center",
-                        padding: 10,
-                        margin: 5,
-                      }}
+          this.state.history.length > 0 ? (
+            <ScrollView>
+              {this.state.history !== null &&
+                this.state.history
+                  .filter((history) => history.status !== "progress")
+                  .map((history, index) => (
+                    <TouchableWithoutFeedback
+                      key={index}
+                      onPress={() => this.showInfo(history)}
                     >
                       <View
                         style={{
-                          flex: 1,
-                          flexDirection: "row",
+                          //top: SIZES.height * (20 / 100) - 5,
+
+                          backgroundColor: COLORS.white,
+                          //height: 85,
+                          width: "97%",
+                          zIndex: 10,
+                          shadowColor: "#000",
+                          elevation: 4,
+                          alignSelf: "center",
+                          borderRadius: 8,
+                          justifyContent: "center",
+                          padding: 10,
+                          margin: 5,
                         }}
                       >
                         <View
                           style={{
-                            justifyContent: "center",
+                            flex: 1,
+                            flexDirection: "row",
                           }}
                         >
-                          <Text
+                          <View
                             style={{
-                              color: COLORS.lightGray,
-                              ...FONTS.body4,
+                              justifyContent: "center",
                             }}
                           >
-                            {this.checkStatusColor(history.status)}
-                            {moment(history.created_at).format(
-                              "DD/MM/YYYY HH:mm"
-                            )}
-                          </Text>
-                          <Text
-                            style={{
-                              color: COLORS.lightGray,
-                              ...FONTS.body4,
-                            }}
-                          >
-                            สถานะ : {this.checkType(history.type)}
-                          </Text>
+                            <Text
+                              style={{
+                                color: COLORS.lightGray,
+                                ...FONTS.body4,
+                              }}
+                            >
+                              {this.checkStatusColor(history.status)}
+                              {moment(history.created_at).format(
+                                "DD/MM/YYYY HH:mm"
+                              )}
+                            </Text>
+                            <Text
+                              style={{
+                                color: COLORS.lightGray,
+                                ...FONTS.body4,
+                              }}
+                            >
+                              สถานะ : {this.checkType(history.type)}
+                            </Text>
 
-                          <Text
-                            style={{
-                              color: COLORS.lightGray2,
-                              ...FONTS.h4,
-                            }}
-                          >
-                            <Image
-                              source={images.origin_icon}
-                              style={{ height: 20, width: 20 }}
-                            ></Image>
-                            {history.originName.name}
-                          </Text>
-                          <Text
-                            style={{
-                              color: COLORS.lightGray2,
-                              ...FONTS.h4,
-                            }}
-                          >
-                            <Image
-                              source={images.destination_icon}
-                              style={{ height: 20, width: 20 }}
-                            ></Image>
-                            {history.destinationName.name}
-                          </Text>
+                            <Text
+                              style={{
+                                color: COLORS.lightGray2,
+                                ...FONTS.h4,
+                              }}
+                            >
+                              <Image
+                                source={images.origin_icon}
+                                style={{ height: 20, width: 20 }}
+                              ></Image>
+                              {history.originName.name}
+                            </Text>
+                            <Text
+                              style={{
+                                color: COLORS.lightGray2,
+                                ...FONTS.h4,
+                              }}
+                            >
+                              <Image
+                                source={images.destination_icon}
+                                style={{ height: 20, width: 20 }}
+                              ></Image>
+                              {history.destinationName.name}
+                            </Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </TouchableWithoutFeedback>
-                ))}
-          </ScrollView>
+                    </TouchableWithoutFeedback>
+                  ))}
+            </ScrollView>
+          ) : (
+            <View>
+              <Text style={{ justifyContent: "center", alignSelf: "center" }}>
+                  ไม่พบประวัติการเดินทาง
+              </Text>
+            </View>
+          )
         ) : (
           <View>
-            <Text style={{ justifyContent: "center", alignSelf: "center"}}>
+            <Text style={{ justifyContent: "center", alignSelf: "center" }}>
               กำลังค้นหา
             </Text>
           </View>

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Image } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
 import Omise from 'omise-react-native';
 import { BackButton } from '../../components';
 import { COLORS, FONTS, SIZES } from '../../constants';
 import axios from 'axios'
-import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -23,6 +22,7 @@ class PromptPayScreen extends Component {
             confirmTransferTime: false,
             confirmBtnColor: COLORS.lightGray2,
             accepted: false,
+            isCheck: false,
             isLoadQRCode: false,
             QRCode: null,
             sourceId: null,
@@ -35,12 +35,26 @@ class PromptPayScreen extends Component {
     }
 
     async checkPendingTransaction() {
+        console.log("Check")
         axios.post('/omise/check', {}, {
             headers: {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
-        }).then((resp) => {
-            console.log("K")
+        }).then((res) => {
+            if (res.data.status === 'success') {
+                this.setState({
+                    isCheck: true,
+                    isLoadQRCode: true,
+                    sourceId: res.data.qr_id,
+                    expires_at: res.data.expires_at
+                }, () => {
+                    this.setState({ QRCode: res.data.image_uri });
+                })
+            }else {
+                this.setState({
+                    isCheck: true
+                })
+            }
         }).catch((e) => {
             console.log(e)
         })
@@ -335,8 +349,25 @@ class PromptPayScreen extends Component {
         )
     }
 
-    handleCancelDeposit() {
-        console.log("cancel")
+    async handleCancelDeposit() {
+        axios.post('/omise/cancel', {
+            qrcode_id: this.state.sourceId
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((res) => {
+            console.log(res.data)
+            this.setState({
+                isLoadQRCode: false,
+                amount: null,
+                confirmAmount: false,
+                confirmUsage: false,
+                confirmTransferTime: false,
+            })
+        }).catch((e) => {
+            console.log(e)
+        })
     }
 
     render() {
@@ -356,7 +387,11 @@ class PromptPayScreen extends Component {
                 </View>
 
                 <ScrollView>
-                    {this.state.isLoadQRCode ? this.renderQRCode(this.state.QRCode, this.state.amount, this.state.sourceId, this.state.expires_at) : this.renderRequireAmount()}
+                    {this.state.isCheck ? 
+                        this.state.isLoadQRCode ? this.renderQRCode(this.state.QRCode, this.state.amount, this.state.sourceId, this.state.expires_at) : this.renderRequireAmount()
+                        :
+                        <Text>Loading</Text>
+                    }
                 </ScrollView>
 
             </SafeAreaView>

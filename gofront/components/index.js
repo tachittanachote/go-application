@@ -12,6 +12,7 @@ import PassengerFilter from "./PassengerFilter";
 import Slider from "./Slider";
 import EmergencyButton from "./EmergencyButton"
 import Balance from "./Balance";
+import PaymentOptions from "./PaymentOptions";
 
 export {
     AppHeader,
@@ -27,5 +28,6 @@ export {
     PassengerFilter,
     Slider,
     EmergencyButton,
-    Balance
+    Balance,
+    PaymentOptions
 }

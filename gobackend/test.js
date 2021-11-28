@@ -119,6 +119,13 @@ exports.runTest = () => {
     color: "Black",
     model: "BMW",
   }
+
+  const carInfo2 = {
+    registration: "AB123",
+    color: "RED",
+    model: "HAVAL",
+  }
+  
   
   let options = {
     gender: "male",
@@ -129,9 +136,9 @@ exports.runTest = () => {
   console.log("IBOTTTT",car.getCarByDriverId(80))
 
   car.addCar(driver2, 4, carInfo).then(car.updateOptions(driver2.id, options));
-  car.addCar(driver3, 2, carInfo).then(car.updateOptions(driver3.id, {gender: "female"}));
+  car.addCar(driver3, 2, carInfo2).then(car.updateOptions(driver3.id, {gender: "female"}));
   car.addCar(driver4, 1, carInfo).then(car.updateOptions(driver4.id, {gender: "female"}));
-  car.addCar(theklaoww, 1, carInfo).then(car.updateOptions(theklaoww.id, {gender: "female"}));
+  car.addCar(theklaoww, 4, carInfo)//.then(car.updateOptions(theklaoww.id, {gender: "female"}));
   
   
   //car.addPassenger(driver1.id, passenger1);

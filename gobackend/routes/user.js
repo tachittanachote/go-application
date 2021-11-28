@@ -1,5 +1,6 @@
 const express = require("express");
 const userController = require("../controllers/userController")
+const bankAccountController = require("../controllers/bankAccountController")
 const router = express.Router();
 const users = require("../models/user");
 
@@ -47,6 +48,36 @@ router.post('/:id', async(req, res) => {
     var user = await userController.getUserById(req.user.user_id)
     res.json(user)
 });
+
+
+router.post('/driververify/:id', async (req, res) => {
+
+    if (req.user.user_id === req.params.id) {
+        const result = await userController.getVerifyStatusByUserId(req.user.user_id)
+        console.log(result)
+        res.json(result[0].verify_driver)
+    }
+    else {
+        res.json("Conflict")
+    }
+
+})
+
+router.post('/bankcheck/:id', async (req, res) => {
+
+    if (req.user.user_id === req.params.id) {
+        const result = await bankAccountController.getBankAccountByUserId(req.user.user_id)
+        if(result.length === 0) {
+            return res.json("error")
+        }else {
+            return res.json(result)
+        }
+    }
+    else {
+        res.json("Conflict")
+    }
+
+})
 
 
 

@@ -159,9 +159,36 @@ class DrivingScreen extends Component {
             }
         }).then((e) => {
             if(e.data === "success") {
-                console.log('history record had updated!')
+                console.log('passenger history record had updated!')
             }else{
-                console.log('history update errorrrrr')
+                console.log('passenger history update errorrrrr')
+            }
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
+    async updateRecordPassengerTranscation(passengerId, moneyAmonut) {
+        console.log('function record transaction had called!')
+        axios.post("/transaction/update", {
+            driver: {
+                id: this.context.user.user_id,
+            },
+            passenger: {
+                id: passengerId,
+            },
+            payInfo: {
+                amount: moneyAmonut
+            }
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((e) => {
+            if(e.data === "success") {
+                console.log('passenger transaction record had updated!')
+            }else{
+                console.log('passenger transaction update errorrrrr')
             }
         }).catch((e) => {
             console.log(e)
@@ -197,8 +224,9 @@ class DrivingScreen extends Component {
                         }
                     }).then(async (e) => {
                         if (e.data.status === "success") {
-                           
-                            await recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
+                           console.log(e.data)
+                            await this.recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
+                            await this.updateRecordPassengerTranscation(passengerId, e.data.price)
                             //Alert.alert("สำเร็จ")
                         }
                     }).catch((e) => {

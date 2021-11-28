@@ -213,7 +213,7 @@ class Lobby extends Component {
                 </View>
 
 
-                <Balance navigation={this.props.navigation}></Balance>
+                <Balance navigation={this.props.navigation} balance={this.context.user.wallet_balance}></Balance>
 
                 <View style={{
                     marginTop: 5,

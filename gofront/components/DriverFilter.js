@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableWithoutFeedback, TextInput, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { Picker } from '@react-native-community/picker';
 import { COLORS, FONTS, SIZES } from '../constants';
 
 import Modal from "react-native-modal";

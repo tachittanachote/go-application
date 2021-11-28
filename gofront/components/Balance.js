@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { COLORS, SIZES, FONTS } from '../constants';
 
@@ -46,14 +45,14 @@ class Balance extends Component {
                 <View style={{
                     marginLeft: 5,
                 }}>
-                    <Text>$ 29.00</Text>
+                        <Text>$ {this.props.balance}</Text>
                 </View>
                 <View style={{
                     alignItems: 'flex-end',
                     flex: 2,
                     marginRight: 20,
                 }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.navigate()}>
                         <View>
                             <Text style={{
                                 fontWeight: 'bold',

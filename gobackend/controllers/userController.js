@@ -7,7 +7,12 @@ const GET_USER_STATEMENT = "SELECT * FROM users WHERE user_id = ? "
 const GET_USER_STATEMENT_BY_PHONE_NUMBER = "SELECT * FROM users WHERE phone_number = ?"
 const GET_USER_STATEMENT_BY_PHONE_NUMBER_AND_DEVICE_ID = "SELECT * FROM users WHERE phone_number = ? and device_id = ?"
 const UPDATE_USER_STATEMENT_BY_PHONE_NUMBER = "UPDATE users SET device_id = ? WHERE phone_number = ?"
+<<<<<<< HEAD
 const UPDATE_USER_INFORMATION_BY_USER_ID = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, date_of_birth = ?, emergency_phone_number = ?, license_plate = ?, brand = ?, model = ?, color = ?, driver_license_id = ?, citizen_id = ?  WHERE user_id = ? "
+=======
+const UPDATE_USER_BALANCE_STATEMENT_BY_USER_ID = "UPDATE users SET wallet_balance = ? WHERE user_id = ?"
+const UPDATE_USER_INFORMATION_BY_USER_ID = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone_number = ?, gender = ?, date_of_birth = ?, emergency_phone_number = ?, license_plate = ?, brand = ?, model = ?, color = ?  WHERE user_id = ? "
+>>>>>>> 0fa592a71e4f198828c8fd0303715d36e77720a8
 
 exports.addUser = (user) => {
     const id = generateUniqueId({
@@ -39,11 +44,6 @@ exports.getUserById = (userId) => {
     return new Promise((resolve, reject) => {
         db.query(GET_USER_STATEMENT, [userId], (err, res) => {
             if (err) reject(err);
-            var data = {
-                date_of_birth:moment(res[0].date_of_birth).format("YYYY-MM-DD")
-              }
-              Object.assign(res[0],data)
-              //console.log(res[0],"getProfileFromDB")
             resolve(res);
         });
     });
@@ -89,7 +89,16 @@ exports.updateUserInfomationByUserId = (user) => {
 
 exports.updateUserBalance = (userId, balance) => {
     return new Promise((resolve, reject) => {
-        db.query('', [], (err, result) => {
+        db.query(UPDATE_USER_BALANCE_STATEMENT_BY_USER_ID, [balance, userId], (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+}
+
+exports.getVerifyStatusByUserId = (userId) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT verify_driver FROM users WHERE user_id = ?', [userId], (err, result) => {
             if (err) reject(err);
             resolve(result);
         });

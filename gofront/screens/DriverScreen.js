@@ -189,7 +189,7 @@ class DriverScreen extends PureComponent {
     }
 
     handleStart = async () => {
-
+        console.log("starting driver context", this.context.user)
         console.log("Start!!!", this.state.availableSeat)
         
         axios.post("/cars/start", {
@@ -201,9 +201,9 @@ class DriverScreen extends PureComponent {
                 destinationLat: this.state.destination?.latitude ? this.state.destination?.latitude : this.state.destination.geometry.location.lat,
                 destinationLong: this.state.destination?.longitude ? this.state.destination.longitude : this.state.destination.geometry.location.lng,
                 carInfo: {
-                    registration: "AB123", //Database  
-                    color: "Black",     //Database  
-                    model: "BMW", //Database  
+                    registration: this.context.user.license_plate, //Database
+                    color: this.context.user.color,     //Database
+                    model: this.context.user.model, //Database
                     seat: this.state.availableSeat
                 }
             },
@@ -244,7 +244,8 @@ class DriverScreen extends PureComponent {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
         }).then((e) => {
-            if(e.data === "success") {
+            //console.log(e.data)
+            if(e.data.status === "success") {
                 console.log('history record had created!')
             }else{
                 console.log('history errorrrrr')
@@ -281,7 +282,10 @@ class DriverScreen extends PureComponent {
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
+<<<<<<< HEAD
                 
+=======
+>>>>>>> 0fa592a71e4f198828c8fd0303715d36e77720a8
                 <BackButton navigation={this.props.navigation}></BackButton>
                 <DriverFilter onFilterCallback={(filterData) => this.onFilterCallback(filterData)}></DriverFilter>
 
