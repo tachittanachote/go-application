@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController")
 const moment = require("moment")
+const multer = require('multer');
+const bodyParser = require('body-parser');
 
 router.post("/update", async(req, res) => {
    console.log(req.body)
