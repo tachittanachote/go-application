@@ -300,7 +300,7 @@ class DrivingScreen extends Component {
                     bookingPassengers: []
                 })
             } else {
-                console.log("pulled", e.data)
+                console.log("tetetetetetetetetetetet pulled", e.data)
                 //this.state.bookingPassengers = e.data;
                 this.setState({
                     bookingPassengers: e.data
@@ -434,8 +434,7 @@ class DrivingScreen extends Component {
 
                             {//this.state.bookingPassengers.length>0 &&
                                 this.state.bookingPassengers !== null &&
-                                this.state?.bookingPassengers
-                                    .filter(bookingPassengers => bookingPassengers.id !== undefined)
+                                this.state?.bookingPassengers.filter(bookingPassengers => bookingPassengers.id !== undefined)
                                     .map(
                                         (passenger, index) => (
                                             <Marker
