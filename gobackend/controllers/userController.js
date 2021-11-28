@@ -13,7 +13,7 @@ const CHECK_ADMIN = "SELECT * FROM admin WHERE username = ? "
 const UPDATE_ADMIN_TOKEN = "UPDATE admin SET token = ? WHERE username = ? "
 const CHECK_TOKEN_ADMIN = "SELECT token FROM admin WHERE username = ? "
 
-const GET_USERS_WAIT_VERIFY = "SELECT user_id, first_name, last_name ,driver_license_id, driver_license_expired_date FROM users WHERE driver_license_id IS NOT NULL AND (verify_driver != ? OR verify_driver IS NULL)"
+const GET_USERS_WAIT_VERIFY = "SELECT user_id, first_name, last_name ,driver_license_id, driver_license_expired_date, citizen_id, date_of_birth FROM users WHERE driver_license_id IS NOT NULL AND (verify_driver != ? OR verify_driver IS NULL)"
 const VERIFY_DRIVER_USER_BY_ID = "UPDATE users SET verify_driver = ? WHERE user_id = ? "
 
 exports.updateVerifyDriver = (uid) => {
