@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, Image, TextInput, ScrollView} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, Image, TextInput, ScrollView, TouchableOpacity} from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { Icon } from 'react-native-elements';
@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import UserContext from '../context/UserProvider';
 import Modal from "react-native-modal";
+import { SwipeablePanel } from "rn-swipeable-panel";
 
 class DriverScreen extends PureComponent {
 
@@ -26,14 +27,28 @@ class DriverScreen extends PureComponent {
             mapRef: null,
             mapViewDirection: null,
             nearbyPlace: [],
+            favorites: [],
             filterOptions: {
                 gender: 'none'
             },
             availableSeat: 3,
             popupState: false,
-            seatError: false
+            seatError: false,
+            panelProps: {
+                fullWidth: true,
+                openLarge: true,
+                refreshing: false,
+                onClose: () => this.closePanel(),
+                onPressCloseButton: () => this.closePanel(),
+            },
+            isPanelActive: false,
+            favoName: '',
         }
     }
+
+    closePanel = () => {
+        this.setState({ isPanelActive: false });
+    };
 
     componentDidMount = () => {
         requestGeolocationPermission().then((e) => {
@@ -279,13 +294,89 @@ class DriverScreen extends PureComponent {
         }
     }
 
+    toggleAddFavorite() {
+        this.setState({ isPanelActive: true })
+    }
+
+    async addFavorite() {
+
+        if (this.state.favoName.length <= 0) {
+            alert("โปรดระบุชื่อตำแหน่ง")
+            return;
+        }
+
+        axios.post('/favorite/add', {
+            name: this.state.favoName,
+            destination: this.state.destination.location
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((resp) => {
+            console.log(resp.data)
+            this.setState({ isPanelActive: false })
+        }).catch((e) => {
+            console.log("Favorite", e)
+        })
+    }
+
+    async fetchFavorites() {
+        axios.post('/favorite').then((resp) => {
+            console.log(resp.data)
+            this.setState({ favorites: resp.data })
+        }).catch((e) => {
+            console.log("Favorite", e)
+        })
+    }
+
+    renderContent() {
+
+        return (
+            <View
+                style={{
+                    padding: SIZES.padding,
+                }}
+            >
+                <View>
+                    <Text
+                        style={{
+                            ...FONTS.h5,
+                        }}
+                    >
+                        Add to favorite
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        margin: SIZES.margin
+
+                    }}>
+                    <Text>ตั้งชื่อจุดหมาย</Text>
+                    <TextInput placeholder="" keyboardType='numeric' style={styles.inputBank} onChangeText={(value) => this.setState({ favoName: value })}></TextInput>
+
+                    <TouchableWithoutFeedback onPress={() => this.addFavorite()}>
+                        <View style={{
+                            borderRadius: SIZES.radius - 5,
+                            backgroundColor: COLORS.primary,
+                            padding: SIZES.padding * 1.5,
+                            marginTop: SIZES.margin,
+                        }}>
+                            <Text style={{
+                                textAlign: 'center',
+                                color: COLORS.white,
+                                ...FONTS.h5
+                            }}>เพิ่ม</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+            </View>
+        );
+    }
+
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-<<<<<<< HEAD
                 
-=======
->>>>>>> 0fa592a71e4f198828c8fd0303715d36e77720a8
                 <BackButton navigation={this.props.navigation}></BackButton>
                 <DriverFilter onFilterCallback={(filterData) => this.onFilterCallback(filterData)}></DriverFilter>
 
@@ -482,13 +573,34 @@ class DriverScreen extends PureComponent {
                                 backgroundColor: COLORS.white,
                                 padding: SIZES.padding * 2.5,
                             }}>
-                                <Title title="จุดหมายปลายทาง"></Title>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <View style={{
+                                        flex: 1,
+                                    }}>
+                                        <Title title="จุดหมายปลายทาง"></Title>
+                                    </View>
+                                    <View style={{
+                                        flex: 1,
+                                        alignItems: 'flex-end'
+                                    }}>
+                                        <TouchableOpacity onPress={() => this.toggleAddFavorite(this.state.destination)}>
+                                            <Icon
+                                                name='heart-outline'
+                                                type='ionicon'
+                                                color={COLORS.red}
+                                                size={22}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                                 <View style={{
                                     flex: 1,
                                     flexDirection: 'row',
                                     alignItems: 'center',
                                     backgroundColor: COLORS.lightGray3,
-                                    padding: SIZES.padding * 3,
+                                    padding: SIZES.padding * 2,
                                     borderRadius: SIZES.radius
                                 }}>
                                     <Icon
@@ -504,13 +616,15 @@ class DriverScreen extends PureComponent {
                                         flex: 1,
                                         flexDirection: 'column'
                                     }}>
-                                        <Text style={{
-                                            ...FONTS.h4
-                                        }}>{this.state.destination.name}</Text>
-                                        <Text style={{
-                                            color: COLORS.lightGray2,
-                                            ...FONTS.body4
-                                        }}>{this.state.destination.formatted_address}</Text>
+                                        <ScrollView>
+                                            <Text style={{
+                                                ...FONTS.h4
+                                            }}>{this.state.destination.name}</Text>
+                                            <Text style={{
+                                                color: COLORS.lightGray2,
+                                                ...FONTS.body4
+                                            }}>{this.state.destination.formatted_address}</Text>
+                                        </ScrollView>
                                     </View>
                                 </View>
                                 <TouchableWithoutFeedback onPress={() => this.handleDestination(null)}>
@@ -545,6 +659,14 @@ class DriverScreen extends PureComponent {
                         }
                     </View>
                 }
+
+                <SwipeablePanel
+                    {...this.state.panelProps}
+                    isActive={this.state.isPanelActive}
+                >
+                    {this.renderContent()}
+                </SwipeablePanel>
+
             </SafeAreaView>
         );
     }
@@ -560,6 +682,12 @@ const styles = StyleSheet.create({
     tocuhable: {
         flex: 1,
         backgroundColor: "transparent",
+    },
+    inputBank: {
+        backgroundColor: COLORS.lightGray3,
+        padding: SIZES.margin,
+        marginTop: 10,
+        borderRadius: SIZES.radius2
     }
 })
 
