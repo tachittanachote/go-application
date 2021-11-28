@@ -275,10 +275,7 @@ class DriverScreen extends PureComponent {
 
     onFilterCallback(data) {
         this.setState({ filterOptions: data }, () => {
-            console.log(data)
-<<<<<<< HEAD
-        });        
-=======
+            console.log(data) 
         });
 
     }
@@ -289,7 +286,6 @@ class DriverScreen extends PureComponent {
         } else {
             this.setState({ viewFavr: true });
         }
->>>>>>> d5839f64b19387672a2f6b9d1ac1c287f708ca43
     }
 
     toggleStartPopup() {
@@ -559,11 +555,8 @@ class DriverScreen extends PureComponent {
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-<<<<<<< HEAD
                 
-=======
                 {this.renderFavoriteList()}
->>>>>>> d5839f64b19387672a2f6b9d1ac1c287f708ca43
                 <BackButton navigation={this.props.navigation}></BackButton>
                 <DriverFilter onFilterCallback={(filterData) => this.onFilterCallback(filterData)}></DriverFilter>
 
