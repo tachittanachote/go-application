@@ -18,7 +18,7 @@ router.post("/", async(req, res) => {
     var user_id = req.body.user.user_id;
     var userProfile = await userController.getUserById(user_id.toString())
     var data = {
-      date_of_birth:moment(userProfile[0].date_of_birth).format("YYYY-MM-DD")
+      date_of_birth: moment(userProfile[0].date_of_birth).format("YYYY-MM-DD")
     }
     Object.assign(userProfile[0], data)
     res.json(userProfile[0])
