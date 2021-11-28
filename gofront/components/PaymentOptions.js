@@ -86,7 +86,8 @@ class PaymentOptions extends Component {
                                             alignItems: 'center',
                                         flexDirection: 'row'
                                     }}>
-                                        <RadioButton value="cash" />
+                                            <RadioButton value="cash" status={this.state.paymentOption === 'cash' ? 'checked' : 'unchecked'}
+                                                onPress={() => this.setState({ paymentOption: 'cash' })}/>
                                         <Text>เงินสด</Text>
                                         
                                     </View>
@@ -97,7 +98,8 @@ class PaymentOptions extends Component {
                                         alignItems: 'center',
                                         flexDirection: 'row'
                                     }}>
-                                        <RadioButton value="wallet" />
+                                                <RadioButton value="wallet" status={this.state.paymentOption === 'wallet' ? 'checked' : 'unchecked'}
+                                                    onPress={() => this.setState({ paymentOption: 'wallet' })}/>
                                         <Text>Go Wallet</Text>
                                         <Text> (คงเหลือ: {this.props.balance} บาท)</Text>
                                         

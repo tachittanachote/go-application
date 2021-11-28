@@ -305,7 +305,8 @@ class DriverScreen extends PureComponent {
     }
 
     toggleAddFavorite = () => {
-        this.setState({ isPanelActive: true })
+        console.log(this.state.destination)
+        this.setState({ isPanelActive: true, favoName: this.state.destination.name })
     }
 
     async addFavorite() {
@@ -337,6 +338,7 @@ class DriverScreen extends PureComponent {
                 authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
             }
         }).then((resp) => {
+            alert("เพิ่มจุดหมายนี้ไปยังรายการโปรดของคุณเรียบร้อยแล้ว")
             console.log(resp.data)
             this.setState({ isPanelActive: false }, () => {
                 this.fetchFavorites()
@@ -500,6 +502,7 @@ class DriverScreen extends PureComponent {
             }
         }).then((resp) => {
             this.fetchFavorites()
+            alert("ดำเนินการสำเร็จ")
         }).catch((e) => {
             console.log("Favorite", e)
         })
@@ -528,7 +531,7 @@ class DriverScreen extends PureComponent {
 
                     }}>
                     <Text>ตั้งชื่อจุดหมาย</Text>
-                    <TextInput placeholder="" keyboardType='numeric' style={styles.inputBank} onChangeText={(value) => this.setState({ favoName: value })}></TextInput>
+                    <TextInput placeholder={this.state.favoName} value={this.state.favoName} keyboardType='numeric' style={styles.inputBank} onChangeText={(value) => this.setState({ favoName: value })}></TextInput>
 
                     <TouchableWithoutFeedback onPress={() => this.addFavorite()}>
                         <View style={{
