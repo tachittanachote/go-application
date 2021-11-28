@@ -59,7 +59,7 @@ router.use('/history', historyRoute)
 router.use('/feedback', feedbackRoute)
 router.use('/transaction', transactionRoute)
 router.use('/wallet', walletRoute)
-router.use('/favorite', middleware.verifySessionToken, walletRoute)
+router.use('/favorite', middleware.verifySessionToken, favoriteRoute)
 
 app.listen(PORT, () => {
     console.log(`SERVER: listening on 0.0.0.0:${PORT}`)
