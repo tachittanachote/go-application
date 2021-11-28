@@ -55,7 +55,7 @@ router.post('/driververify/:id', async (req, res) => {
     if (req.user.user_id === req.params.id) {
         const result = await userController.getVerifyStatusByUserId(req.user.user_id)
         console.log(result)
-        res.json(result[0].verify_driver)
+        res.json({verify_driver: result[0].verify_driver, driver_license_id: result[0].driver_license_id})
     }
     else {
         res.json("Conflict")

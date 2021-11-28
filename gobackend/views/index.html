@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GO SYSTEM</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i];
+          var eqPos = cookie.indexOf("=");
+          var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+      }
+
+      function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      $(document).ready(function () {
+        let user = getCookie("token");
+
+        if (user !== undefined && user !== "") {
+          $("#login_form").hide();
+          var button = $(
+            '<input type="button" id="logout" value="logout"/><input type="button" id="showDrivers" value="drivers verify system"/>'
+          );
+          $("body").append(button);
+        }
+
+        $("#showDrivers").click(function () {
+          $.ajax({
+            type: "POST",
+            url: "/api/v1/system/getDrivers",
+            data: {
+              token: user,
+              user: getCookie("user"),
+            },
+            dataType: "json",
+            success: function (data) {
+              console.log(data);
+              if (data != "error") {
+                console.log(data);
+                var table = $(
+                  `<table id="tabledata">
+                        <tr>
+                            <th>number</th>
+                            <th>name</th>
+                            <th>driver license</th>
+                            <th>Active</th>
+                        </tr>
+                    </table>`
+                );
+                $("#showDrivers").hide();
+                $("body").append(table);
+                for (d in data) {
+                  console.log(data[d].first_name);
+                  var count = parseInt(d) + 1;
+                  //console.log(data[d].driver_license_expired_date);
+
+                  var row = $(`
+                        <tr>
+                            <td>${count}</td>
+                            <td>${data[d].first_name} ${data[d].last_name}</td>
+                            <td>${data[d].driver_license_id}</td>
+                            <td><input type="button" id="${data[d].user_id}" onclick="active(${data[d].user_id})" value="active"/></td>
+                        </tr>`);
+                  $("#tabledata").append(row);
+                }
+              } else {
+                alert("user authorized!");
+                deleteAllCookies();
+                location.reload();
+              }
+            },
+          });
+        });
+
+        $("#logout").click(function () {
+            deleteAllCookies();
+            location.reload();
+        });
+
+        $("#login").click(function () {
+          var username = $("#username").val();
+          var password = $("#password").val();
+
+          if(username == ''){
+            $("#username").focus()
+          }else if(password == ''){
+            $("#password").focus()
+          }else{
+            $.ajax({
+            type: "POST", 
+            url: "/api/v1/system/login", 
+            data: {
+              username: username,
+              password: password,
+            }, 
+            dataType: "json",
+            success: function (data) {
+              //console.log(data)
+              if (data !== "error") {
+                document.cookie = `token=${data.token}`;
+                document.cookie = `user=${username}`;
+                location.reload();
+              } else {
+                alert("username or password incorrect!");
+              }
+            },
+            });
+          }
+          
+        });
+
+        active = (id) => {
+        //alert(id)
+        $.ajax({
+          type: "POST",
+          url: "/api/v1/system/activeDriver",
+          data: {
+            token: user,
+            user: getCookie("user"),
+            driver:{
+                id: id,
+            },
+          }, 
+          dataType: "json",
+          success: function (data) {
+            //console.log(data)
+            if (data !== "error") {
+              console.log(data)
+              $(`#${id}`).val('actived')
+              $(`#${id}`).prop('disabled', true);
+            } else {
+              alert("user authorized!");
+              deleteAllCookies();
+              location.reload();
+            }
+          },
+        });
+      };
+
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+        <h1>Go together - Web System</h1>
+    </div>
+    <form class="form" action="#" method="post" id="login_form">
+      <div class="container">
+        <label for="username"><b>Username</b></label>
+        <input
+          type="text"
+          placeholder="Enter Username"
+          id="username"
+          required
+        />
+
+        <label for="password"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          id="password"
+          required
+        />
+
+        <input type="button" value="Submit" name="login" id="login" />
+      </div>
+    </form>
+  </body>
+</html>
