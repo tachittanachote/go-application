@@ -53,7 +53,7 @@ class PassengerScreen extends PureComponent {
       travelInfo: null,
       selectedCarId: null,
       filterOptions: {
-        seats: 4,
+        seats: 3,
         gender: "none",
       },
       payment: {
