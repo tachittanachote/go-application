@@ -71,7 +71,7 @@ class DriverFilter extends Component {
                 <TouchableWithoutFeedback onPress={this.toggleFilter}>
                     <View style={{
                         padding: 10,
-                        width: SIZES.width * (30 / 100),
+                        width: SIZES.width * (40 / 100),
                         flex: 1,
                         borderRadius: 20,
                         backgroundColor: COLORS.purple,

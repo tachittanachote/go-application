@@ -24,4 +24,12 @@ router.post('/add', async (req, res) => {
     res.json("OK");
 });
 
+router.post('/remove', async (req, res) => {
+    const id = req.body.id;
+    const favr = await favoriteController.removeFavoriteById(id);
+
+    res.json("OK");
+});
+
+
 module.exports = router;
