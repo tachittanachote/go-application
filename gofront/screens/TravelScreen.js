@@ -152,7 +152,7 @@ class TravelScreen extends Component {
 
     getDriverName = async () => {
 
-        axios.post('/user//fetch/' + this.props.route.params.driver.carId, {
+        axios.post('/user/fetch/' + this.props.route.params.driver.carId, {
 
         }, {
             headers: {
