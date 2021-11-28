@@ -282,6 +282,10 @@ class DriverScreen extends PureComponent {
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
+<<<<<<< HEAD
+                
+=======
+>>>>>>> 0fa592a71e4f198828c8fd0303715d36e77720a8
                 <BackButton navigation={this.props.navigation}></BackButton>
                 <DriverFilter onFilterCallback={(filterData) => this.onFilterCallback(filterData)}></DriverFilter>
 

@@ -33,7 +33,10 @@ class Profile extends Component {
             emailErrorText: null,
             phoneNumberErrorText: null,
             emergencyPhoneNumberErrorText: null,
-            carInfoErrorText: null
+            carInfoErrorText: null,
+            citizen_id: null,
+            driver_license_id: null,
+            driver_permission: null
         }
 
 
@@ -62,7 +65,11 @@ class Profile extends Component {
                 brand: profile.brand,
                 model: profile.model,
                 color: profile.color,
+                citizen_id: profile.citizen_id,
+                driver_license_id: profile.driver_license_id,
+                driver_permission: profile.driver_permission
             })
+            console.log("check driver_permission",this.state.driver_permission)
         }).catch((e) => {
             console.log(e)
         })
@@ -100,9 +107,11 @@ class Profile extends Component {
             correct = true
         }
 
-        if (this.state.license_plate.length !== 0 | this.state.brand.length !== 0 | this.state.model.length !== 0 | this.state.color.length !== 0) {
-            if (this.state.license_plate.length === 0 | this.state.brand.length === 0 | this.state.model.length === 0 | this.state.color.length === 0) {
-                this.setState({carInfoErrorText:"please completely input information of your car"});correct = false;correctCarInfo = false
+        if (this.state.license_plate.length !== 0 | this.state.brand.length !== 0 | this.state.model.length !== 0 | this.state.color.length !== 0 | this.state.citizen_id !== 0 |
+            this.state.driver_license_id != 0) {
+            if (this.state.license_plate.length === 0 | this.state.brand.length === 0 | this.state.model.length === 0 | this.state.color.length === 0 | this.state.citizen_id === 0 
+                | this.state.citizen_id.length !== 13 | this.state.driver_license_id.length === 0 | this.state.driver_license_id.length !== 8) {
+                this.setState({carInfoErrorText:"please completely input information of your car \n ensure citizen id is 13 digits and \n driver license id is 8 digits"});correct = false;correctCarInfo = false
             }
         }
 
@@ -122,7 +131,9 @@ class Profile extends Component {
                     license_plate:this.state.license_plate,
                     brand:this.state.brand,
                     model:this.state.model,
-                    color:this.state.color
+                    color:this.state.color,
+                    citizen_id:this.state.citizen_id,
+                    driver_license_id:this.state.driver_license_id
                 }
             }, {
                 headers: {
@@ -169,7 +180,10 @@ class Profile extends Component {
                     license_plate: profile.license_plate,
                     brand: profile.brand,
                     model: profile.model,
-                    color: profile.color
+                    color: profile.color,
+                    driver_license_id: profile.driver_license_id,
+                    citizen_id: profile.citizen_id,
+                    driver_permission: profile.driver_permission
 
                 })
             }).catch((e) => {
@@ -262,8 +276,8 @@ class Profile extends Component {
                                     <Text style={styles.info}>ทะเบียนรถยนต์ {this.state.license_plate === null ? <>{this.context.user.license_plate === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.license_plate}</>}</> : <>{this.state.license_plate}</>}</Text>
                                     <Text style={styles.info}>ยี่ห้อรถยนต์ {this.state.brand === null ? <>{this.context.user.brand === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.brand}</>}</> : <>{this.state.brand}</>}</Text>
                                     <Text style={styles.info}>รุ่นรถยนต์ {this.state.model === null ? <>{this.context.user.model === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.model}</>}</> : <>{this.state.model}</>}</Text>
-                                    <Text style={styles.info}>สีรถยนต์ {this.state.model === null ? <>{this.context.user.color === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.color}</>}</> : <>{this.state.color}</>}</Text>
-
+                                    <Text style={styles.info}>สีรถยนต์ {this.state.model === null ? <>{this.context.user.color === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.color}</>}</> : <>{this.state.color}</>}</Text>                                  
+                                    {this.context.user.driver_permission===1 ? <Text style={styles.info} color="green">ได้รับอนุญาตให้ขับขี่</Text> : <Text style={styles.info} color="red">ยังไม่ได้รับอนุญาตให้ขับขี่</Text>}
                                 </>
 
                                 :
@@ -371,6 +385,25 @@ class Profile extends Component {
                                         placeholder="สีรถยนต์"
                                         keyboardType="default"
                                     />
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ citizen_id: text })}
+                                        value={this.state.citizen_id}
+                                        placeholder="เลขบัตรประจำตัวประชาชน"
+                                        keyboardType="default"
+                                    />
+                                    <TextInput
+                                        style={styles.info}
+                                        onChangeText={(text) => this.setState({ driver_license_id: text })}
+                                        value={this.state.driver_license_id}
+                                        placeholder="เลขที่ใบขับขี่"
+                                        keyboardType="default"
+                                    />
+                                    <Text style={{
+                                        color: COLORS.red,
+                                        marginBottom: SIZES.marginBottom,
+                                        ...FONTS.body3
+                                    }}>{this.state.carInfoErrorText}</Text>
                                 </>
                             }
                         </View>
