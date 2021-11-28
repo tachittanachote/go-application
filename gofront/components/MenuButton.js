@@ -13,7 +13,8 @@ class MenuButton extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalState: false
+            modalState: false,
+            wait: false,
         }
     }
 
@@ -40,10 +41,12 @@ class MenuButton extends Component {
                 authorization: 'Bearer ' + token
             }
         }).then((resp) => {
-            if (resp.data === "verified") {
+            if (resp.data.verify_driver === "verified") {
                 this.props.navigation.navigate(route);
             }
-            else {
+            else if(resp.data.driver_license_id != null){
+                this.setState({ wait: true , modalState: true})
+            }else{
                 this.setState({ modalState: true })
             }
         }).catch((e) => {
@@ -86,11 +89,15 @@ class MenuButton extends Component {
                             <View style={{
                                 marginTop: SIZES.margin
                             }}>
-                                <Text style={{
+                                {this.state.wait?<Text style={{
                                     textAlign: 'center',
                                     marginBottom: 10,
                                     ...FONTS.h5
-                                }}>โปรดดำเนินการยืนยันข้อมูล</Text>
+                                }}>รอการยืนยันจากระบบ</Text>:<Text style={{
+                                    textAlign: 'center',
+                                    marginBottom: 10,
+                                    ...FONTS.h5
+                                }}>โปรดดำเนินการยืนยันข้อมูล</Text>}
                             </View>
                         
                             <Image 
@@ -102,7 +109,7 @@ class MenuButton extends Component {
                             <Text style={{
                                 textAlign: 'center',
                                 color: COLORS.red,
-                            }}>ยืนยันตัวตนการขับขี่และรับส่งผู้โดยสาร</Text>
+                            }}>ยืนยันตัวตนเพื่อขับขี่และรับส่งผู้โดยสาร</Text>
 
                         </View>
                         <View style={{
@@ -111,14 +118,17 @@ class MenuButton extends Component {
                             alignItems: 'center',
                             width: '100%'
                         }}>
-                            <TouchableOpacity style={{
+                            {this.state.wait? <></>:<TouchableOpacity style={{
                                 marginBottom: 10
-                            }} onPress={() => console.log("test")}>
+                            }} onPress={() => {
+                                this.setState({ modalState: false},
+                                    this.props.navigation.navigate("Profile"))
+                            }}>
                                 <Text style={{
                                     color: COLORS.bluesky,
                                     ...FONTS.h6
                                 }}>ส่งข้อมูลเพื่อเปิดใช้งาน</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
                             <TouchableOpacity onPress={() => this.setState({ modalState: false})}>
                                 <Text style={{
                                     color: COLORS.lightGray2,

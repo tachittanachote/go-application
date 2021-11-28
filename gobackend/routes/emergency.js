@@ -7,6 +7,7 @@ router.post("/", async (req, res) => {
   var emergencyPacket = req.body.emergencyPacket;
 
 let linkMap = `https://www.google.com/maps/?q=${emergencyPacket.message.lat},${emergencyPacket.message.long}`
+let linkMap2 = `https://www.google.com/maps/dir//${emergencyPacket.message.lat},${emergencyPacket.message.long}`
 
   try {
     var sendMessage = await vonage.sendUnicodeMessage(
@@ -18,7 +19,7 @@ let linkMap = `https://www.google.com/maps/?q=${emergencyPacket.message.lat},${e
         " " +
         emergencyPacket.last_name +
         " กำลังโดยสารรถยนต์อยู่ที่ตำแหน่ง ( " + 
-        linkMap +
+        linkMap2 +
         " ) " + /*+" (ละติจูด " +
         emergencyPacket.message.lat +
         " ลองติจูด " +

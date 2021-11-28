@@ -18,6 +18,8 @@ const historyRoute = require("./routes/history");
 const feedbackRoute = require("./routes/feedback");
 const transactionRoute = require("./routes/transaction");
 const walletRoute = require("./routes/wallet");
+const webRoute = require("./routes/web");
+const favoriteRoute = require("./routes/favorite");
 
 //Middleware
 const middleware = require("./middleware");
@@ -35,8 +37,12 @@ app.use('/static', express.static('public'))
 app.use('/api/v1', router);
 
 app.get("/", (req, res) => {
-    res.redirect("https://www.google.com");
+    //res.redirect("https://www.google.com");
+    res.sendFile(__dirname + '/views/index.html');
 })
+
+//web
+router.use('/system', webRoute)
 
 //No middleware require
 router.use('/device', devicesRoute)
@@ -58,6 +64,7 @@ router.use('/history', historyRoute)
 router.use('/feedback', feedbackRoute)
 router.use('/transaction', transactionRoute)
 router.use('/wallet', walletRoute)
+router.use('/favorite', middleware.verifySessionToken, favoriteRoute)
 
 app.listen(PORT, () => {
     console.log(`SERVER: listening on 0.0.0.0:${PORT}`)

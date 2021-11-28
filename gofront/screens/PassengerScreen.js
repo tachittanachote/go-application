@@ -309,14 +309,14 @@ class PassengerScreen extends PureComponent {
   }
 
   onPaymentOptionCallback = (value) => {
-    console.log(value);
+    console.log("clasloadpasjdpoajpojaopjopsjdj obackkkkkkkkkkkkkkkkkkkkkk",value);
    
         this.setState({
             payment: {
                 type: value,
             },
             //onPaymentSelected: true
-        })
+        }, console.log(this.state.payment))
     
   };
 

@@ -28,7 +28,9 @@ class DrivingScreen extends Component {
                 onPressCloseButton: () => this.closePanel(),
             },
             passengers: [],
-            bookingPassengers: []
+            bookingPassengers: [],
+            passengerBill: null,
+            modalView: false,
         }
         this.checkPassengerInterval = null;
         this.pullInterval = null;
@@ -224,6 +226,11 @@ class DrivingScreen extends Component {
                         }
                     }).then(async (e) => {
                         if (e.data.status === "success") {
+                            this.setState({
+                                passengerBill: e.data,
+                            },this.setState({
+                                modalView: true,
+                            }));
                            console.log(e.data)
                             await this.recordPassengerHistory(passengerId, e.data.destination.lat, e.data.destination.long, e.data.distance)
                             await this.updateRecordPassengerTranscation(passengerId, e.data.price)
@@ -300,7 +307,7 @@ class DrivingScreen extends Component {
                     bookingPassengers: []
                 })
             } else {
-                console.log("pulled", e.data)
+                console.log("tetetetetetetetetetetet pulled", e.data)
                 //this.state.bookingPassengers = e.data;
                 this.setState({
                     bookingPassengers: e.data
@@ -331,6 +338,14 @@ class DrivingScreen extends Component {
         })
     }
 
+    clearBill = () =>{
+        this.setState({
+            modalView: false
+        },this.setState({
+            passengerBill: null,
+        }))
+    }
+
     componentWillUnmount = () => {
         clearInterval(this.checkPassengerInterval);
         clearInterval(this.pullInterval);
@@ -347,8 +362,8 @@ class DrivingScreen extends Component {
                         flex: 1,
                     }}>
 
-                        <Modal
-                            isVisible={false}
+                        {this.state.passengerBill===null ? <></>:<Modal
+                            isVisible={this.state.modalView}
                             animationIn="slideInDown"
                             animationOut="slideOutUp"
                         >
@@ -379,21 +394,21 @@ class DrivingScreen extends Component {
                                         color: COLORS.lightGray2,
                                         marginBottom: 10,
                                         ...FONTS.h4
-                                    }}>คุณเตชิตธนโชติ (ID: 11192020)</Text>
+                                    }}>{this.state.passengerBill.passengerName} (ID: {this.state.passengerBill.passengerId})</Text>
 
                                     <Text style={{
                                         textAlign: 'center',
                                         marginBottom: 10,
                                         color: COLORS.lightGray2,
                                         ...FONTS.h4
-                                    }}>ระยะการเดินทางทั้งหมด 50 กม.</Text>
+                                    }}>ระยะการเดินทางทั้งหมด {this.state.passengerBill.distance} กม.</Text>
 
                                     <Text style={{
                                         textAlign: 'center',
                                         marginBottom: 10,
                                         color: COLORS.lightGray2,
                                         ...FONTS.h4
-                                    }}>ชำระค่าบริการ 250 บาท</Text>
+                                    }}>ชำระค่าบริการ {this.state.passengerBill.price} บาท</Text>
 
                                 </View>
 
@@ -401,7 +416,7 @@ class DrivingScreen extends Component {
                                     flex: 1,
                                     justifyContent: 'flex-end'
                                 }}>
-                                    <TouchableWithoutFeedback onPress={() => this.updateFilter()}>
+                                    <TouchableWithoutFeedback onPress={() => this.clearBill()}>
                                         <View style={{
                                             borderRadius: SIZES.radius - 5,
                                             backgroundColor: COLORS.primary,
@@ -419,7 +434,7 @@ class DrivingScreen extends Component {
 
                             </View>
 
-                        </Modal>
+                        </Modal>}
 
 
                         <MapView
@@ -434,8 +449,7 @@ class DrivingScreen extends Component {
 
                             {//this.state.bookingPassengers.length>0 &&
                                 this.state.bookingPassengers !== null &&
-                                this.state?.bookingPassengers
-                                    .filter(bookingPassengers => bookingPassengers.id !== undefined)
+                                this.state?.bookingPassengers.filter(bookingPassengers => bookingPassengers.id !== undefined)
                                     .map(
                                         (passenger, index) => (
                                             <Marker
