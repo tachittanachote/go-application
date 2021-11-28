@@ -160,6 +160,7 @@ class TravelScreen extends Component {
             }
         }).then((e) => {
             console.log(e.data)
+            this.setState({ driverName: e.data[0].first_name + " " + e.data[0].last_name})
         }).catch((e) => {
             console.log(e)
         })
