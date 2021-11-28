@@ -36,7 +36,7 @@ class Profile extends Component {
             carInfoErrorText: null,
             citizen_id: null,
             driver_license_id: null,
-            driver_permission: null
+            verify_driver: null
         }
 
 
@@ -67,9 +67,9 @@ class Profile extends Component {
                 color: profile.color,
                 citizen_id: profile.citizen_id,
                 driver_license_id: profile.driver_license_id,
-                driver_permission: profile.driver_permission
+                verify_driver: profile.verify_driver
             })
-            console.log("check driver_permission",this.state.driver_permission)
+            console.log("check verify_driver", this.state.verify_driver)
         }).catch((e) => {
             console.log(e)
         })
@@ -84,8 +84,9 @@ class Profile extends Component {
         var correctEmergencyPhoneNumber = true;
         var correctCarInfo = true;
 
-        if (this.state.first_name === null || this.state.first_name === "") this.setState({ first_name: this.context.user.first_name }); correct = false
-        if (this.state.last_name === null || this.state.last_name === "") this.setState({ last_name: this.state.last_name }); correct = false
+        console.log(this.state.first_name)
+        if (this.state.first_name === null || this.state.first_name === "") { this.setState({ first_name: this.context.user.first_name }); correct = false; console.log("firstname fail") }
+        if (this.state.last_name === null || this.state.last_name === "") { this.setState({ last_name: this.state.last_name }); correct = false; console.log("lastname fail") }
 
         if (!validator.isEmail(this.state.email)) { this.setState({ emailErrorText: "please enter new email with correct format" }); correctEmail = false; correct = false }
         if (validator.isEmail(this.state.email)) { correctEmail = true; this.setState({ emailErrorText: null }) }
@@ -93,25 +94,20 @@ class Profile extends Component {
         if (this.state.phone_number.length !== 10 || this.state.phone_number.charAt(0) !== "0") { this.setState({ phoneNumberErrorText: "please start with 0 or make sure it is 10 digits" }); correctPhoneNumber = false; correct = false }
         if (!(this.state.phone_number.length !== 10 || this.state.phone_number.charAt(0) !== "0")) { correctPhoneNumber = true; correct = true; this.setState({ phoneNumberErrorText: null }) }
 
-        if (this.state.emergency_phone_number.length != 0) {
+        if (this.state.emergency_phone_number.length !== 0) {
             if (this.state.emergency_phone_number.length !== 10 || this.state.emergency_phone_number.charAt(0) !== "0") { this.setState({ emergencyPhoneNumberErrorText: "please start with 0 or make sure it is 10 digits" }); correctEmergencyPhoneNumber = false; correct = false }
             else { correctEmergencyPhoneNumber = true; correct = true; this.setState({ emergencyPhoneNumberErrorText: null }) }
         }
 
-        if (this.state.gender === null || this.state.gender === "") this.setState({ gender: this.context.user.gender }); correct = false
-        if (this.state.date_of_birth === null || this.state.date_of_birth === "") this.setState({ date_of_birth: this.context.user.date_of_birth }); correct = false
-
         if (!(this.state.first_name === null || this.state.first_name === "") && !(this.state.last_name === null || this.state.last_name === "")
-            && correctEmail === true && correctPhoneNumber === true && !(this.state.gender === null || this.state.gender === "")
-            && !(this.state.date_of_birth === null || this.state.date_of_birth === "")) {
+            && correctEmail === true && correctPhoneNumber === true ) {
             correct = true
         }
 
-        if (this.state.license_plate.length !== 0 | this.state.brand.length !== 0 | this.state.model.length !== 0 | this.state.color.length !== 0 | this.state.citizen_id !== 0 |
-            this.state.driver_license_id != 0) {
-            if (this.state.license_plate.length === 0 | this.state.brand.length === 0 | this.state.model.length === 0 | this.state.color.length === 0 | this.state.citizen_id === 0 
-                | this.state.citizen_id.length !== 13 | this.state.driver_license_id.length === 0 | this.state.driver_license_id.length !== 8) {
-                this.setState({carInfoErrorText:"please completely input information of your car \n ensure citizen id is 13 digits and \n driver license id is 8 digits"});correct = false;correctCarInfo = false
+        if (this.state.driver_license_id !== "") {
+            if (this.state.license_plate ===  "" | this.state.brand===  "" | this.state.model==="" | this.state.color===  "" | this.state.citizen_id ===  "" | this.state.citizen_id.length !==13
+                | this.state.driver_license_id.length !== 8) {
+                this.setState({ carInfoErrorText: "please completely input information of your car \n ensure citizen id is 13 digits and \n driver license id is 8 digits" }); correct = false; correctCarInfo = false
             }
         }
 
@@ -128,12 +124,12 @@ class Profile extends Component {
                     gender: this.state.gender,
                     date_of_birth: this.state.date_of_birth,
                     emergency_phone_number: this.state.emergency_phone_number,
-                    license_plate:this.state.license_plate,
-                    brand:this.state.brand,
-                    model:this.state.model,
-                    color:this.state.color,
-                    citizen_id:this.state.citizen_id,
-                    driver_license_id:this.state.driver_license_id
+                    license_plate: this.state.license_plate,
+                    brand: this.state.brand,
+                    model: this.state.model,
+                    color: this.state.color,
+                    citizen_id: this.state.citizen_id,
+                    driver_license_id: this.state.driver_license_id
                 }
             }, {
                 headers: {
@@ -183,7 +179,7 @@ class Profile extends Component {
                     color: profile.color,
                     driver_license_id: profile.driver_license_id,
                     citizen_id: profile.citizen_id,
-                    driver_permission: profile.driver_permission
+                    verify_driver: profile.verify_driver
 
                 })
             }).catch((e) => {
@@ -276,8 +272,8 @@ class Profile extends Component {
                                     <Text style={styles.info}>ทะเบียนรถยนต์ {this.state.license_plate === null ? <>{this.context.user.license_plate === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.license_plate}</>}</> : <>{this.state.license_plate}</>}</Text>
                                     <Text style={styles.info}>ยี่ห้อรถยนต์ {this.state.brand === null ? <>{this.context.user.brand === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.brand}</>}</> : <>{this.state.brand}</>}</Text>
                                     <Text style={styles.info}>รุ่นรถยนต์ {this.state.model === null ? <>{this.context.user.model === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.model}</>}</> : <>{this.state.model}</>}</Text>
-                                    <Text style={styles.info}>สีรถยนต์ {this.state.model === null ? <>{this.context.user.color === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.color}</>}</> : <>{this.state.color}</>}</Text>                                  
-                                    {this.context.user.driver_permission===1 ? <Text style={styles.info} color="green">ได้รับอนุญาตให้ขับขี่</Text> : <Text style={styles.info} color="red">ยังไม่ได้รับอนุญาตให้ขับขี่</Text>}
+                                    <Text style={styles.info}>สีรถยนต์ {this.state.model === null ? <>{this.context.user.color === null ? <>ยังไม่มีการเพิ่มข้อมูลรถยนต์</> : <>{this.context.user.color}</>}</> : <>{this.state.color}</>}</Text>
+                                    {this.context.user.verify_driver === "verified" ? <Text style={styles.info} color="green">ได้รับอนุญาตให้ขับขี่</Text> : <Text style={styles.info} color="red">ยังไม่ได้รับอนุญาตให้ขับขี่</Text>}
                                 </>
 
                                 :

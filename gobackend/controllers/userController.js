@@ -41,6 +41,11 @@ exports.getUserById = (userId) => {
     return new Promise((resolve, reject) => {
         db.query(GET_USER_STATEMENT, [userId], (err, res) => {
             if (err) reject(err);
+            var data = {
+                date_of_birth:moment(res[0].date_of_birth).format("YYYY-MM-DD")
+              }
+              Object.assign(res[0],data)
+              //console.log(res[0],"getProfileFromDB")
             resolve(res);
         });
     });
