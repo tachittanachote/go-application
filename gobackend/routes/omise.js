@@ -222,7 +222,7 @@ router.post("/addBank", middleware.verifySessionToken, async (req, res) => {
   };
   request(options, async function (error, response) {
     if (error) return res.json("error");
-    //console.log(response.body);
+    console.log(response.body);
     let values = JSON.parse(response.body);
     await bankAccountController.createBankAccount(
       values.id,

@@ -246,38 +246,6 @@ class WalletScreen extends Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
-        <View>
-          <TouchableWithoutFeedback
-            onPress={() => this.navigate("CreditCardScreen")}
-          >
-            <View style={styles.paymentMethod}>
-              <View>
-                <Icon
-                  reverse
-                  type="ionicon"
-                  name="card-outline"
-                  size={18}
-                  color={COLORS.lightGray2}
-                  color="#FFF3DE"
-                  reverseColor="#FF7C00"
-                />
-              </View>
-              <View style={styles.paymentLabel}>
-                <View>
-                  <Text>Credit Card</Text>
-                </View>
-                <View style={{ flex: 2, alignItems: "flex-end" }}>
-                  <Icon
-                    type="ionicon"
-                    name="chevron-forward-outline"
-                    size={14}
-                    color={COLORS.lightGray2}
-                  />
-                </View>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
       </View>
     );
   }

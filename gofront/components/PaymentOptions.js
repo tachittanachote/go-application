@@ -76,28 +76,28 @@ class PaymentOptions extends Component {
                                     ...FONTS.h5
                                 }}>เลือกช่องทางการชำระเงิน</Text>
                                 <RadioButton.Group  onValueChange={(value) => {
-                                this.setState({paymentOption: value })
-                                this.props.onPaymentOptionCallback(value)
+                                    this.setState({ paymentOption: value }, this.props.onPaymentOptionCallback(this.state.paymentOption))
+                                
                                 }} 
                                 value={this.state.paymentOption}
                                 >
-                                    <TouchableOpacity onPress={() => this.setState({ paymentOption: 'cash' })}>
+                                    <TouchableOpacity onPress={() => this.setState({ paymentOption: 'cash' }, this.props.onPaymentOptionCallback(this.state.paymentOption))}>
                                     <View style={{
                                             alignItems: 'center',
                                         flexDirection: 'row'
                                     }}>
-                                        <RadioButton value="cash" />
+                                            <RadioButton value="cash" status={this.state.paymentOption === 'cash' ? 'checked' : 'unchecked'}/>
                                         <Text>เงินสด</Text>
                                         
                                     </View>
                                     </TouchableOpacity>
                                     {this.props.balance > this.props.estPrice  ?
-                                    <TouchableOpacity onPress={() => this.setState({ paymentOption: 'wallet' })}>
+                                        <TouchableOpacity onPress={() => this.setState({ paymentOption: 'wallet' }, this.props.onPaymentOptionCallback(this.state.paymentOption))}>
                                     <View style={{
                                         alignItems: 'center',
                                         flexDirection: 'row'
                                     }}>
-                                        <RadioButton value="wallet" />
+                                                <RadioButton value="wallet" status={this.state.paymentOption === 'wallet' ? 'checked' : 'unchecked'}/>
                                         <Text>Go Wallet</Text>
                                         <Text> (คงเหลือ: {this.props.balance} บาท)</Text>
                                         
