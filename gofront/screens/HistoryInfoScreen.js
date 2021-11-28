@@ -505,7 +505,8 @@ class HistoryInfoScreen extends Component {
             {this.paidInfo()}
           </>
         ) : (
-          this.infoPage()
+          //this.infoPage()
+          <></>
         )}
       </SafeAreaView>
     );
