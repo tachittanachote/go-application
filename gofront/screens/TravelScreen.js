@@ -19,12 +19,13 @@ class TravelScreen extends Component {
             invoice: {},
             place: null,
             remainDistance: null,
+            driverName: "",
         }
         this.invoiceInterval = null
     }
 
     componentDidMount = () => {
-
+        this.getDriverName()
         console.log("SOAkopdSDKAJDAOSDJASD ",this.props.route.params.driver)
 
         this.getPlaceDestinationName()
@@ -149,6 +150,21 @@ class TravelScreen extends Component {
         })
     }
 
+    getDriverName = async () => {
+
+        axios.post('/user//fetch/' + this.props.route.params.driver.carId, {
+
+        }, {
+            headers: {
+                authorization: 'Bearer ' + await AsyncStorage.getItem('session_token')
+            }
+        }).then((e) => {
+            console.log(e.data)
+        }).catch((e) => {
+            console.log(e)
+        })
+    }
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -222,12 +238,12 @@ class TravelScreen extends Component {
                     }}>
                         <View style={styles.flexRow}>
                             <View style={styles.flex}>
-                                <Text style={styles.description}>หมายเลขประจำตัวผู้ขับ 110293</Text>
+                                <Text style={styles.description}>หมายเลขประจำตัวผู้ขับ {this.props.route.params.driver.carId}</Text>
                             </View>
                         </View>
                         <View style={styles.flexRow}>
                             <View style={styles.flex}>
-                                <Text style={styles.description}>ชื่อผู้ขับ นายเตชิตธนโชติ อามาตมนตรี</Text>
+                                <Text style={styles.description}>ชื่อผู้ขับ {this.state.driverName === "" ? "กำลังโหลด" : this.state.driverName}</Text>
                             </View>
                         </View>
                         <HorizontalLine></HorizontalLine>

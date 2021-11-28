@@ -49,6 +49,13 @@ router.post('/:id', async(req, res) => {
     res.json(user)
 });
 
+router.post('/fetch/:id', async (req, res) => {
+    //RETURN PROFILE
+    //console.log(req.user)
+    var user = await userController.getUserById(req.params.id)
+    res.json(user)
+});
+
 
 router.post('/driververify/:id', async (req, res) => {
 
