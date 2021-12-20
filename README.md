@@ -5,7 +5,7 @@ GoApp Frontend &amp; Backend
 
 ## Getting started
 To get the backend running:
-- Import script go.sql to your MySQL DB
+- Import script go.sql to your MySQL DB to create tables
 - `cd gobackend` to get into backend directory
 - `npm install` to install node module packages dependencies
 - `npm start` to start the local server
