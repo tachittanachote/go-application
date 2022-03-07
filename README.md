@@ -1,4 +1,7 @@
-# go_app
+# go_application
+
+Private Car Sharing for Public Transportation
+
 GoApp Frontend &amp; Backend 
 
 - Clone this repository https://github.com/tachittanachote/go_app.git
