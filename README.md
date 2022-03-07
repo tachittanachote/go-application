@@ -1,6 +1,6 @@
 # go_application
 
-Private Car Sharing for Public Transportation
+Private Car Sharing for Public Transportation created by React Native
 
 GoApp Frontend &amp; Backend 
 
